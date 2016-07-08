@@ -1,13 +1,17 @@
 package com.xu.utils;
 
+import android.content.Context;
+import android.os.AsyncTask;
+
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-
-import android.os.AsyncTask;
+import java.io.InputStreamReader;
 
 /**
  * 
@@ -15,6 +19,21 @@ import android.os.AsyncTask;
  *
  */
 public class FileUtils {
+
+
+
+	public static String getFromRaw(Context context,int resourceId) throws IOException {
+        InputStream is = context.getResources().openRawResource(resourceId);
+        InputStreamReader reader = new InputStreamReader(is);
+        BufferedReader bufferedReader = new BufferedReader(reader);
+        StringBuffer buffer = new StringBuffer("");
+        String str;
+        while ((str = bufferedReader.readLine()) != null) {
+            buffer.append(str);
+            buffer.append("\n");
+        }
+        return buffer.toString();
+	}
 
 	public static InputStream openFile(String path) {
 		File file = new File(path);
