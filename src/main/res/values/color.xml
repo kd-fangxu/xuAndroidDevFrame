@@ -295,4 +295,7 @@
     <color name="green">#008000</color>
     <!-- 绿色 -->
 
+
+
+    <color name="mask_white">#30ffffff</color>
 </resources>

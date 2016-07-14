@@ -57,6 +57,9 @@ public class LoadingDialogUtil {
 
 	public synchronized  void cancelDialog() {
 		mLoadingDialogCount--;
-		mDialog.dismiss();
+		if (mDialog!=null){
+			mDialog.dismiss();
+		}
+
 	}
 }
