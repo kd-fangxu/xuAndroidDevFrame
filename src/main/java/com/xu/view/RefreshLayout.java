@@ -1,7 +1,5 @@
 package com.xu.view;
 
-import com.example.xudeveframe.R;
-
 import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.AttributeSet;
@@ -9,10 +7,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
+
+import com.example.xudeveframe.R;
 
 /**
  * 继承自SwipeRefreshLayout,从而实现滑动到底部时上拉加载更多的功能.
@@ -64,9 +63,10 @@ public class RefreshLayout extends SwipeRefreshLayout implements OnScrollListene
 	public RefreshLayout(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
-		mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+		mTouchSlop = 100;
 
 		mListViewFooter = LayoutInflater.from(context).inflate(R.layout.listview_footer, null, false);
+
 	}
 
 	@Override
@@ -134,7 +134,7 @@ public class RefreshLayout extends SwipeRefreshLayout implements OnScrollListene
 	 * @return
 	 */
 	private boolean canLoad() {
-		return isBottom() && !isLoading && isPullUp();
+		return isBottom() && !isLoading && isPullUp()&&mListView.getAdapter().getCount()>0;
 	}
 
 	/**
@@ -154,7 +154,7 @@ public class RefreshLayout extends SwipeRefreshLayout implements OnScrollListene
 	 * @return
 	 */
 	private boolean isPullUp() {
-		return (mYDown - mLastY) >= mTouchSlop;
+		return (mYDown -  mLastY) >= mTouchSlop;
 	}
 
 	/**
@@ -184,7 +184,6 @@ public class RefreshLayout extends SwipeRefreshLayout implements OnScrollListene
 	}
 
 	/**
-	 * @param loadListener
 	 */
 	public void setOnLoadListener(OnLoadListener loadListener) {
 		mOnLoadListener = loadListener;

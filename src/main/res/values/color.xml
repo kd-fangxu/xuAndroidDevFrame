@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    
-      <color name="vpi__background_holo_dark">#ff000000</color>
+
+    <color name="black_p50">#7f000000</color>
+    <color name="gray_e7e7e7">#e7e7e7</color>
+    <color name="b_c_fafafa">#fafafa</color>
+    <color name="blue_4285f4">#4285f4</color>
+    <color name="black_5a626d">#5a626d</color>
+
+    <color name="vpi__background_holo_dark">#ff000000</color>
     <color name="vpi__background_holo_light">#fff3f3f3</color>
     <color name="vpi__bright_foreground_holo_dark">@color/vpi__background_holo_light</color>
     <color name="vpi__bright_foreground_holo_light">@color/vpi__background_holo_dark</color>
@@ -194,7 +200,7 @@
     <!-- 重褐色 -->
     <color name="darkmagenta">#8B008B</color>
     <!-- 暗洋红 -->
-    <color name="darkred">#8B0000</color>
+    <color name="darkred">#95ee3b3b</color>
     <!-- 暗红色 -->
     <color name="blueviolet">#8A2BE2</color>
     <!-- 紫罗兰蓝色 -->

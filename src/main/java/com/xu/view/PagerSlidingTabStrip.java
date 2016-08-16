@@ -53,6 +53,7 @@ import com.example.xudeveframe.R;
 public class PagerSlidingTabStrip extends HorizontalScrollView {
 
 	public interface IconTabProvider {
+
 		public int getPageIconResId(int position);
 	}
 

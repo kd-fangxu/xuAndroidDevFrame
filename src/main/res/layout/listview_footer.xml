@@ -2,20 +2,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@color/lightgrey"
     android:gravity="center"
     android:paddingBottom="8dip"
-    android:paddingTop="5dip" >
+    android:paddingTop="5dip">
 
-    <ProgressBar
-        android:id="@+id/pull_to_refresh_load_progress"
-        style="@android:style/Widget.ProgressBar.Small.Inverse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:paddingRight="100dp"
-        android:indeterminate="true" />
+    <!--<ProgressBar-->
+    <!--android:id="@+id/pull_to_refresh_load_progress"-->
+    <!--style="@android:style/Widget.ProgressBar.Small.Inverse"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:paddingRight="100dp"-->
+    <!--android:indeterminate="true" />-->
+
 
     <TextView
         android:id="@+id/pull_to_refresh_loadmore_text"
@@ -24,7 +24,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:paddingTop="5dip"
-        android:text="正在加载"
+        android:text="正在加载..."
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/darker_gray"
         android:textSize="14sp"
