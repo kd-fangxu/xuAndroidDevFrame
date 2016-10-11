@@ -11,27 +11,39 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.xu.utils.cacheManager.CacheManager;
 
 public abstract class XuBaseActivity extends AppCompatActivity {
 
 
-    public  Handler mHandler;
-    Toast temToast;
+    public Handler mHandler;
+    private Toast temToast;
+    public MaterialDialog dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 //        getActionBar().hide();
-
-        mHandler=new Handler();
+        mHandler = new Handler();
         initToast();
 //        setTheme(R.style.XuBaseActivityTheme);
         setLayout();
     }
 
     public abstract void setLayout();
+
+
+    public void showProgressDialog(String title, String msg) {
+        dialog = new MaterialDialog.Builder(this)
+                .title(title)
+                .content(msg)
+                .progress(true, 0)
+                .show();
+
+    }
 
     @SuppressLint("ShowToast")
     private void initToast() {
