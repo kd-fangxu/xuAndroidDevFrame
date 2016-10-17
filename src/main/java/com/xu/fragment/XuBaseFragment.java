@@ -18,9 +18,7 @@ public class XuBaseFragment extends Fragment {
 
     public XuBaseFragment() {
     }
-
     ;
-
     public static XuBaseFragment newInstance() {
         XuBaseFragment fragment = new XuBaseFragment();
         return fragment;

@@ -7,10 +7,8 @@ public class GsonFormatUtil<T> {
 
 	public  T formatJs(String json) {
 		Gson gson = new Gson();
-
 		T t = gson.fromJson(json, new TypeToken<T>() {
 		}.getType());
-
 		return t;
 	}
 }
