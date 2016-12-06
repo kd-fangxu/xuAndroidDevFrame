@@ -90,8 +90,7 @@
     <!-- 亚麻色 -->
     <color name="antiquewhite">#FAEBD7</color>
     <!-- 古董白 -->
-    <color name="salmon">#FA8072</color>
-    <!-- 鲜肉色 -->
+
     <color name="ghostwhite">#F8F8FF</color>
     <!-- 幽灵白 -->
     <color name="mintcream">#F5FFFA</color>
@@ -302,6 +301,7 @@
     <!-- 绿色 -->
 
 
-
+    <color name="red_alert">#ff6072</color>
     <color name="mask_white">#30ffffff</color>
+    <color name="green_pass">#679903</color>
 </resources>

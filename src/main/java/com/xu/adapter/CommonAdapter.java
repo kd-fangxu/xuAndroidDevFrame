@@ -9,12 +9,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 /**
- * 这是一个通用的数据适配器  
+ * 这是一个通用的数据适配器  只试用与listview  后去将不建议使用
  * 
  * @author Administrator
  *
  * @param <T>
  */
+
 public abstract class CommonAdapter<T> extends BaseAdapter {
 	protected LayoutInflater mInflater;
 	protected Context mContext;
