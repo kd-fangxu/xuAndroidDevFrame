@@ -38,7 +38,6 @@ public abstract class XuBaseActivity extends AppCompatActivity {
 
     public void showProgressDialog(String title, String msg) {
         dialog = new MaterialDialog.Builder(this)
-                .title(title)
                 .content(msg)
                 .progress(true, 0)
                 .show();
