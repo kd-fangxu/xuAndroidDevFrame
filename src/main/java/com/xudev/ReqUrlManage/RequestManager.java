@@ -2,6 +2,7 @@ package com.xudev.ReqUrlManage;
 
 import android.content.Context;
 
+import com.xudev.ReqUrlManage.ReqBeanProvider.IBaseReqBeanProImp;
 import com.xudev.ReqUrlManage.ReqBeanProvider.IRequestConfigStrProvider;
 import com.xudev.iface.OnCommonBusListener;
 import com.xudev.utils.PatternCheckUtils;
@@ -23,22 +24,25 @@ import java.util.Map;
 public class RequestManager {
 
     private static RequestManager manager;
-    Context context;
+    private Context context;
     private static ReqBean reqBean;
-    INetEngine netEngine;
-    IRequestConfigStrProvider strProvider;
+    private INetEngine netEngine;
+    private IRequestConfigStrProvider strProvider;
+    private IReqBeanProvider reqBeanProvider;
 
     private RequestManager() {
     }
+
     /**
      *
      * @param context
-     * @param strProvider 配置文件源获取
+     * @param reqBeanProvider
      */
-    public static void register(Context context, IRequestConfigStrProvider strProvider) {
+    public static void register(Context context, IBaseReqBeanProImp reqBeanProvider) {
         manager = new RequestManager();
         manager.context = context;
-        manager.strProvider = strProvider;
+        manager.strProvider = reqBeanProvider.getStrProvider();
+        manager.reqBeanProvider = reqBeanProvider;
     }
 
     /**
@@ -55,7 +59,7 @@ public class RequestManager {
                 e.printStackTrace();
             }
         }
-        return getInstance(new IReqBeanProviderDefaultImp(manager.strProvider, manager.context));
+        return getInstance(manager.reqBeanProvider);
     }
 
     public synchronized static RequestManager getInstance(IReqBeanProvider provider) {

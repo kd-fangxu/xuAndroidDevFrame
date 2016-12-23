@@ -7,6 +7,10 @@ import android.content.Context;
  */
 
 public abstract class IBaseReqBeanProImp implements IReqBeanProvider {
+    public IRequestConfigStrProvider getStrProvider() {
+        return strProvider;
+    }
+
     IRequestConfigStrProvider strProvider;
     Context context;
 
@@ -16,7 +20,7 @@ public abstract class IBaseReqBeanProImp implements IReqBeanProvider {
     }
 
     public String getConfigStr() {
-        String result=strProvider.getConfigStr(context);
+        String result = strProvider.getConfigStr(context);
         String resultStr = result.replace(" ", "");
         return resultStr;
     }
