@@ -26,7 +26,7 @@ public class RequestManager {
     private static RequestManager manager;
     private Context context;
     private static ReqBean reqBean;
-    private INetEngine netEngine;
+    private static INetEngine netEngine;
     private IRequestConfigStrProvider strProvider;
     private IReqBeanProvider reqBeanProvider;
 
@@ -34,7 +34,6 @@ public class RequestManager {
     }
 
     /**
-     *
      * @param context
      * @param reqBeanProvider
      */
@@ -110,12 +109,7 @@ public class RequestManager {
             }
             return null;
         }
-        if (reqBean.getDomainName() == null) {
-            if (busListener != null) {
-                busListener.onFailed("DomainName为null");
-            }
-            return null;
-        }
+
         if (currentTaskItem.getUrl() == null) {
             if (busListener != null) {
                 busListener.onFailed("taskItem Url 为 null");
@@ -124,21 +118,27 @@ public class RequestManager {
 
         }
 
-        String reqUrl = reqBean.getDomainName() + currentTaskItem.getUrl();
+        String reqUrl;
 
         if (PatternCheckUtils.isUrl(currentTaskItem.getUrl()))//如果taskItem url 本身为完整路径 则不加载域名
         {
             reqUrl = currentTaskItem.getUrl();
         }
-
-        if (!PatternCheckUtils.isUrl(reqUrl)) {
-            if (busListener != null) {
-                busListener.onFailed("请求地址不合法，请检查domainName和taskItem URL 组合规则 domainName+taskItemUrl");
+        else {
+            if (reqBean.getDomainName() == null) {
+                if (busListener != null) {
+                    busListener.onFailed("DomainName为null");
+                }
+                return null;
             }
-            return null;
+            reqUrl = reqBean.getDomainName() + currentTaskItem.getUrl();
+            if (!PatternCheckUtils.isUrl(reqUrl)) {
+                if (busListener != null) {
+                    busListener.onFailed("请求地址不合法，请检查domainName和taskItem URL 组合规则 domainName+taskItemUrl");
+                }
+                return null;
+            }
         }
-
-
         return reqUrl;
     }
 

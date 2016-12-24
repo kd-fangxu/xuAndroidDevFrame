@@ -26,9 +26,7 @@ public class IReqBeanProviderByXyjBeanImp extends IBaseReqBeanProImp {
 
     public IReqBeanProviderByXyjBeanImp(IRequestConfigStrProvider strProvider, Context context) {
         super(strProvider, context);
-
     }
-
 
 
     @Override
@@ -74,13 +72,24 @@ public class IReqBeanProviderByXyjBeanImp extends IBaseReqBeanProImp {
                   ReqBean.TaskItemBean taskItemBean=new ReqBean.TaskItemBean();
                   String temUrl=childrenBean.getUrl();
                   if (!PatternCheckUtils.isUrl(temUrl)&&environmentArray!=null){//若存在环境参数 先 先参数转换
-                      for (int i = 0; i < environmentArray.length() ; i++) {
+                      Finish:for (int i = 0; i < environmentArray.length() ; i++) {
                           try {
                               JSONObject jo=environmentArray.getJSONObject(i);
-                              if (temUrl.contains("$"+jo.getString("name")+"$")){
-                                  temUrl.replace("$"+jo.getString("name")+"$",jo.getString("value"));
-                                  break;
+
+                              JSONArray vars=jo.getJSONArray("vars");
+                              if (vars.length()>0  ){
+                                  for (int j = 0; j <vars.length() ; j++) {
+                                      JSONObject temJO=vars.getJSONObject(j);
+                                      if (temUrl.contains("$"+temJO.getString("name")+"$")){
+                                          String tag="$"+temJO.getString("name")+"$";
+                                          String replaceMentStr=temJO.getString("value");
+                                          temUrl=temUrl.replace(tag,replaceMentStr);
+                                          break Finish;
+                                      }
+                                  }
+
                               }
+
 
                           } catch (JSONException e) {
                               e.printStackTrace();
@@ -106,7 +115,12 @@ public class IReqBeanProviderByXyjBeanImp extends IBaseReqBeanProImp {
 //                              "requestArgs": "[{\"require\":\"true\",\"children\":[],\"type\":\"string\",\"name\":\"pageId\",\"description\":\"页面id\",\"testValue\":\"110\"},{\"require\":\"true\",\"children\":[],\"type\":\"string\",\"name\":\"pagesize\",\"defaultValue\":\"20\",\"description\":\"显示多少条记录\",\"testValue\":\"20\"}]"
                               ReqBean.TaskItemBean.ParamsBean paramBean=new ReqBean.TaskItemBean.ParamsBean();
                               paramBean.setKey(temJo.getString("name"));
-                              paramBean.setDesc(temJo.getString("description"));
+                              if (temJo.has("description")){
+                                  paramBean.setDesc(temJo.getString("description"));
+                              }else{
+                                  paramBean.setDesc("无接口描述");
+                              }
+
                               paramBean.setIsNessary(temJo.getBoolean("require"));
                               paramList.add(paramBean);
                           }

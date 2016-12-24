@@ -1,6 +1,7 @@
 package com.xudev.ReqUrlManage.Engine;
 
 import com.xudev.iface.OnCommonBusListener;
+import com.xudev.utils.L;
 
 import org.xutils.common.Callback;
 import org.xutils.http.HttpMethod;
@@ -51,6 +52,8 @@ public class INetEngineDefaultImp implements INetEngine {
             httpMethodmethod = HttpMethod.GET;
         } else if (method.equals("post")) {
             httpMethodmethod = HttpMethod.POST;
+        }else{
+            httpMethodmethod=HttpMethod.GET;
         }
 
         x.http().request(httpMethodmethod, reqParam, new Callback.CommonCallback<String>() {
@@ -64,6 +67,7 @@ public class INetEngineDefaultImp implements INetEngine {
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
 //                        busListener.onFailed(ex.getMessage());
+                L.e(reqParam.toString()+ex.toString());
                 commonBusListener.onFailed("网络请求失败");
             }
 
