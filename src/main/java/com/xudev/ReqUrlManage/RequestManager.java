@@ -2,16 +2,14 @@ package com.xudev.ReqUrlManage;
 
 import android.content.Context;
 
-import com.xudev.ReqUrlManage.ReqBeanProvider.IBaseReqBeanProImp;
-import com.xudev.ReqUrlManage.ReqBeanProvider.IRequestConfigStrProvider;
-import com.xudev.iface.OnCommonBusListener;
-import com.xudev.utils.PatternCheckUtils;
-
 import com.xudev.ReqUrlManage.Engine.INetEngine;
 import com.xudev.ReqUrlManage.Engine.INetEngineDefaultImp;
+import com.xudev.ReqUrlManage.ReqBeanProvider.IBaseReqBeanProImp;
 import com.xudev.ReqUrlManage.ReqBeanProvider.IReqBeanProvider;
-import com.xudev.ReqUrlManage.ReqBeanProvider.IReqBeanProviderDefaultImp;
+import com.xudev.ReqUrlManage.ReqBeanProvider.IRequestConfigStrProvider;
 import com.xudev.ReqUrlManage.ReqBeanProvider.ReqBean;
+import com.xudev.iface.OnCommonBusListener;
+import com.xudev.utils.PatternCheckUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -123,8 +121,7 @@ public class RequestManager {
         if (PatternCheckUtils.isUrl(currentTaskItem.getUrl()))//如果taskItem url 本身为完整路径 则不加载域名
         {
             reqUrl = currentTaskItem.getUrl();
-        }
-        else {
+        } else {
             if (reqBean.getDomainName() == null) {
                 if (busListener != null) {
                     busListener.onFailed("DomainName为null");
@@ -179,18 +176,30 @@ public class RequestManager {
                     continue;
                 }
             }
-            if (netEngine != null) {
-                String httpMethod = "get";
-                if (currentTaskItem.getRequestMethod() != null && !currentTaskItem.getRequestMethod().equals("")) {
-                    httpMethod = currentTaskItem.getRequestMethod().toLowerCase();
-                }
 
-                netEngine.doRequest(reqUrl, mapParam, httpMethod, currentTaskItem.isIsCache(), busListener);
-
+            String httpMethod = "get";
+            if (currentTaskItem.getRequestMethod() != null && !currentTaskItem.getRequestMethod().equals("")) {
+                httpMethod = currentTaskItem.getRequestMethod().toLowerCase();
             }
-
+            doCommonRequest(reqUrl,mapParam,httpMethod,currentTaskItem.isIsCache(),busListener);
 
         }
+    }
+
+    public void doCommonRequest(String url, Map<String, Object> params, String method, boolean isCacheFirst, OnCommonBusListener commonBusListener) {
+        if (netEngine != null) {
+            netEngine.doRequest(url, params, method, isCacheFirst, commonBusListener);
+        }
+    }
+
+    public void doGet(String url, Map<String, Object> params, boolean isCacheFirst, OnCommonBusListener commonBusListener) {
+
+        doCommonRequest(url, params, "get", isCacheFirst, commonBusListener);
+    }
+
+    public void doPost(String url, Map<String, Object> params, boolean isCacheFirst, OnCommonBusListener commonBusListener) {
+
+        doCommonRequest(url, params, "post", isCacheFirst, commonBusListener);
     }
 
     /***

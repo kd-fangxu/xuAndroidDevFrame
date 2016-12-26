@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.xudeveframe.R;
-
+@Deprecated
 public class LoadingDialogUtil {
 
 	private volatile static LoadingDialogUtil mLoadingDialogUtil;
