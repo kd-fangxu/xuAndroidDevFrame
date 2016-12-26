@@ -97,6 +97,8 @@ public class IReqBeanProviderByXyjBeanImp extends IBaseReqBeanProImp {
 
                       }
                       taskItemBean.setUrl(temUrl);
+                  }else{
+                      taskItemBean.setUrl(temUrl);
                   }
 
                   taskItemBean.setIsCache(false);

@@ -13,12 +13,12 @@ import java.util.Map;
 
 /**
  * Created by developer on 2016/12/21.
- *
  */
 
 public class INetEngineDefaultImp implements INetEngine {
     /**
      * 默认采用xHttp实现
+     *
      * @param url
      * @param params
      * @param method
@@ -26,7 +26,7 @@ public class INetEngineDefaultImp implements INetEngine {
      * @param commonBusListener
      */
     @Override
-    public void doRequest(String url, Map<String, Object> params, String method, boolean isCacheFirst, final OnCommonBusListener<String> commonBusListener) {
+    public void doRequest(String url, Map<String, Object> params, String method, final boolean isCacheFirst, final OnCommonBusListener<String> commonBusListener) {
         final RequestParams reqParam = new RequestParams(url);
         if (params != null) {
             Iterator entries = params.entrySet().iterator();
@@ -52,11 +52,18 @@ public class INetEngineDefaultImp implements INetEngine {
             httpMethodmethod = HttpMethod.GET;
         } else if (method.equals("post")) {
             httpMethodmethod = HttpMethod.POST;
-        }else{
-            httpMethodmethod=HttpMethod.GET;
+        } else {
+            httpMethodmethod = HttpMethod.GET;
         }
 
-        x.http().request(httpMethodmethod, reqParam, new Callback.CommonCallback<String>() {
+
+        x.http().request(httpMethodmethod, reqParam, new Callback.CacheCallback<String>() {
+
+            @Override
+            public boolean onCache(String result) {
+                commonBusListener.onSucceed(result);
+                return isCacheFirst;
+            }
 
             @Override
             public void onSuccess(String result) {
@@ -67,7 +74,7 @@ public class INetEngineDefaultImp implements INetEngine {
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
 //                        busListener.onFailed(ex.getMessage());
-                L.e(reqParam.toString()+ex.toString());
+                L.e(reqParam.toString() + ex.toString());
                 commonBusListener.onFailed("网络请求失败");
             }
 
