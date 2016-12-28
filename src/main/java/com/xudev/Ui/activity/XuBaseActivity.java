@@ -43,7 +43,6 @@ public abstract class XuBaseActivity extends AppCompatActivity {
                 .show();
 
     }
-
     @SuppressLint("ShowToast")
     private void initToast() {
         // TODO Auto-generated method stub

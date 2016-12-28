@@ -1,15 +1,15 @@
 package com.xudev.utils;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 /**
  * xml解析类
@@ -22,7 +22,6 @@ public class XmlParserUtils {
 	 * get item by xml tag
 	 * 
 	 * @param content
-	 * @param root
 	 * @param per
 	 * @return
 	 */
