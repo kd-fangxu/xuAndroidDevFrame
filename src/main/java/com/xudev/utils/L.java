@@ -4,10 +4,12 @@ import android.util.Log;
 
 /**
  * Log统一管理�?
+ * logutils 待替换
  * 
  * @author way
  * 
  */
+@Deprecated
 public class L {
 
 	private L() {

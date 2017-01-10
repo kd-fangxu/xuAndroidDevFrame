@@ -1,12 +1,12 @@
 package com.xudev.adapter;
 
-import java.util.List;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+
+import java.util.List;
 
 /**
  * 这是一个通用的数据适配器  只试用与listview  后去将不建议使用
@@ -15,7 +15,7 @@ import android.widget.BaseAdapter;
  *
  * @param <T>
  */
-
+@Deprecated
 public abstract class CommonAdapter<T> extends BaseAdapter {
 	protected LayoutInflater mInflater;
 	protected Context mContext;
