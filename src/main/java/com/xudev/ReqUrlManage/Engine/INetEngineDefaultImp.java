@@ -44,7 +44,6 @@ public class INetEngineDefaultImp implements INetEngine {
 //                    busListener.onSucceed(result);
 //                    return;
 //                }
-//
 //            }
 
         HttpMethod httpMethodmethod = HttpMethod.GET;

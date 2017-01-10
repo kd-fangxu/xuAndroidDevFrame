@@ -2,16 +2,14 @@ package com.xudev.ReqUrlManage;
 
 import android.content.Context;
 
-import com.xudev.ReqUrlManage.ReqBeanProvider.IBaseReqBeanProImp;
-import com.xudev.ReqUrlManage.ReqBeanProvider.IRequestConfigStrProvider;
-import com.xudev.iface.OnCommonBusListener;
-import com.xudev.utils.PatternCheckUtils;
-
 import com.xudev.ReqUrlManage.Engine.INetEngine;
 import com.xudev.ReqUrlManage.Engine.INetEngineDefaultImp;
+import com.xudev.ReqUrlManage.ReqBeanProvider.IBaseReqBeanProImp;
 import com.xudev.ReqUrlManage.ReqBeanProvider.IReqBeanProvider;
-import com.xudev.ReqUrlManage.ReqBeanProvider.IReqBeanProviderDefaultImp;
+import com.xudev.ReqUrlManage.ReqBeanProvider.IRequestConfigStrProvider;
 import com.xudev.ReqUrlManage.ReqBeanProvider.ReqBean;
+import com.xudev.iface.OnCommonBusListener;
+import com.xudev.utils.PatternCheckUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -165,18 +163,9 @@ public class RequestManager {
 
         if (currentTaskItem.getParams() != null) {
             for (ReqBean.TaskItemBean.ParamsBean param : currentTaskItem.getParams()) {//注意这种实现 是严格遵守配置文档的参数进行 param设置的 如果mapParam 存在配置中不存在的key值将会被忽略
-                if (param.getKey() == null) {
-                    continue;
-                }
-                if (param.getKey().equals("")) {
-                    continue;
-                }
-                if (param.isIsNessary() && !mapParam.containsKey(param.getKey())) {
+                if (param.getKey() != null && !param.getKey().equals("") && param.isIsNessary() && !mapParam.containsKey(param.getKey())) {
                     busListener.onFailed("缺少key值为" + param.getKey() + "的必要参数");
                     return;
-                }
-                if (!mapParam.containsKey(param.getKey())) {
-                    continue;
                 }
             }
             if (netEngine != null) {
@@ -184,12 +173,9 @@ public class RequestManager {
                 if (currentTaskItem.getRequestMethod() != null && !currentTaskItem.getRequestMethod().equals("")) {
                     httpMethod = currentTaskItem.getRequestMethod().toLowerCase();
                 }
-
                 netEngine.doRequest(reqUrl, mapParam, httpMethod, currentTaskItem.isIsCache(), busListener);
 
             }
-
-
         }
     }
 
