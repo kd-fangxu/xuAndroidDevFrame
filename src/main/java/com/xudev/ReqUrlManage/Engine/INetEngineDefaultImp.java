@@ -58,7 +58,7 @@ public class INetEngineDefaultImp implements INetEngine {
 
         AbsCancelTask<Callback.Cancelable> cancelTask = new AbsCancelTask<Callback.Cancelable>() {
             @Override
-            public void cacelTask() {
+            public void cancelTask() {
                 taskContext.cancel();//根据不同的引擎的任务取消方法  实现不同
             }
         };
