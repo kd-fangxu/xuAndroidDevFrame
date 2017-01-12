@@ -37,7 +37,6 @@ public abstract class XuBaseActivity extends AppCompatActivity {
     public abstract void setLayout(Bundle savedInstanceState);
     protected abstract void loadData();
 
-
     public void showProgressDialog(String title, String msg) {
         if(title!=null){
             dialog = new MaterialDialog.Builder(this)
@@ -54,6 +53,13 @@ public abstract class XuBaseActivity extends AppCompatActivity {
 
 
     }
+
+    public void dismissDialgo(){
+        if(dialog!=null){
+            dialog.dismiss();
+        }
+    }
+
     @SuppressLint("ShowToast")
     private void initToast() {
         // TODO Auto-generated method stub
@@ -90,7 +96,7 @@ public abstract class XuBaseActivity extends AppCompatActivity {
             dialog.dismiss();
             dialog.cancel();
         }
-
+        temToast=null;
         super.onPause();
     }
 }

@@ -60,21 +60,29 @@ public class INetEngineDefaultImp implements INetEngine {
 
             @Override
             public boolean onCache(String result) {
-                commonBusListener.onSucceed(result);
+                if (commonBusListener != null) {
+                    commonBusListener.onSucceed(result);
+                }
+
                 return isCacheFirst;
             }
 
             @Override
             public void onSuccess(String result) {
+                if (commonBusListener != null) {
+                    commonBusListener.onSucceed(result);
+                }
 
-                commonBusListener.onSucceed(result);
             }
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
 //                        busListener.onFailed(ex.getMessage());
                 L.e(reqParam.toString() + ex.toString());
-                commonBusListener.onFailed("网络请求失败");
+                if(commonBusListener!=null){
+                    commonBusListener.onFailed("网络请求失败");
+                }
+
             }
 
             @Override
