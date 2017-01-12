@@ -9,5 +9,7 @@ import java.util.Map;
  */
 
 public interface INetEngine {
-    void doRequest(String url, Map<String, Object> params, String method,boolean isCacheFirst ,OnCommonBusListener<String> commonBusListener);
+
+    AbsCancelTask doRequest(String url, Map<String, Object> params, String method,boolean isCacheFirst ,OnCommonBusListener<String> commonBusListener);
+
 }

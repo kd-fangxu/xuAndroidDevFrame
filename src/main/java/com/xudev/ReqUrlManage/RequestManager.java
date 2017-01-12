@@ -2,6 +2,7 @@ package com.xudev.ReqUrlManage;
 
 import android.content.Context;
 
+import com.xudev.ReqUrlManage.Engine.AbsCancelTask;
 import com.xudev.ReqUrlManage.Engine.INetEngine;
 import com.xudev.ReqUrlManage.Engine.INetEngineDefaultImp;
 import com.xudev.ReqUrlManage.ReqBeanProvider.IBaseReqBeanProImp;
@@ -181,15 +182,52 @@ public class RequestManager {
             if (currentTaskItem.getRequestMethod() != null && !currentTaskItem.getRequestMethod().equals("")) {
                 httpMethod = currentTaskItem.getRequestMethod().toLowerCase();
             }
-            doCommonRequest(reqUrl,mapParam,httpMethod,currentTaskItem.isIsCache(),busListener);
+            doCommonRequest(reqUrl, mapParam, httpMethod, currentTaskItem.isIsCache(), busListener);
 
         }
     }
 
-    public void doCommonRequest(String url, Map<String, Object> params, String method, boolean isCacheFirst, OnCommonBusListener commonBusListener) {
-        if (netEngine != null) {
-            netEngine.doRequest(url, params, method, isCacheFirst, commonBusListener);
+    public AbsCancelTask doRequestInControll(String TaskId, Map<String, Object> mapParam, final OnCommonBusListener<String> busListener, boolean isCatcheFirst) throws Exception {
+
+        String reqUrl = getRequestUrl(TaskId, busListener);
+        if (null == reqUrl) {
+            return null;
         }
+
+        if (currentTaskItem.getParams() != null) {
+            for (ReqBean.TaskItemBean.ParamsBean param : currentTaskItem.getParams()) {//注意这种实现 是严格遵守配置文档的参数进行 param设置的 如果mapParam 存在配置中不存在的key值将会被忽略
+                if (param.getKey() == null) {
+                    continue;
+                }
+                if (param.getKey().equals("")) {
+                    continue;
+                }
+                if (param.isIsNessary() && !mapParam.containsKey(param.getKey())) {
+                    busListener.onFailed("缺少key值为" + param.getKey() + "的必要参数");
+                    return null;
+                }
+                if (!mapParam.containsKey(param.getKey())) {
+                    continue;
+                }
+            }
+
+            String httpMethod = "get";
+            if (currentTaskItem.getRequestMethod() != null && !currentTaskItem.getRequestMethod().equals("")) {
+                httpMethod = currentTaskItem.getRequestMethod().toLowerCase();
+            }
+            AbsCancelTask taskCancel = doCommonRequest(reqUrl, mapParam, httpMethod, currentTaskItem.isIsCache(), busListener);
+            return taskCancel;
+        }
+        return null;
+    }
+
+
+    public AbsCancelTask doCommonRequest(String url, Map<String, Object> params, String method, boolean isCacheFirst, OnCommonBusListener commonBusListener) {
+        if (netEngine != null) {
+            AbsCancelTask cancelTask = netEngine.doRequest(url, params, method, isCacheFirst, commonBusListener);
+            return cancelTask;
+        }
+        return null;
     }
 
     public void doGet(String url, Map<String, Object> params, boolean isCacheFirst, OnCommonBusListener commonBusListener) {

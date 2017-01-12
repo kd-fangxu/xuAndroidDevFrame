@@ -26,7 +26,7 @@ public class INetEngineDefaultImp implements INetEngine {
      * @param commonBusListener
      */
     @Override
-    public void doRequest(String url, Map<String, Object> params, String method, final boolean isCacheFirst, final OnCommonBusListener<String> commonBusListener) {
+    public AbsCancelTask doRequest(String url, Map<String, Object> params, String method, final boolean isCacheFirst, final OnCommonBusListener<String> commonBusListener) {
         final RequestParams reqParam = new RequestParams(url);
         if (params != null) {
             Iterator entries = params.entrySet().iterator();
@@ -56,40 +56,46 @@ public class INetEngineDefaultImp implements INetEngine {
             httpMethodmethod = HttpMethod.GET;
         }
 
-
-        x.http().request(httpMethodmethod, reqParam, new Callback.CacheCallback<String>() {
-
+        AbsCancelTask<Callback.Cancelable> cancelTask = new AbsCancelTask<Callback.Cancelable>() {
             @Override
-            public boolean onCache(String result) {
-                commonBusListener.onSucceed(result);
-                return isCacheFirst;
+            public void cacelTask() {
+                taskContext.cancel();//根据不同的引擎的任务取消方法  实现不同
+                super.cacelTask();
             }
+        };
+        cancelTask.setTaskContext(x.http().request(httpMethodmethod, reqParam, new Callback.CacheCallback<String>() {
 
-            @Override
-            public void onSuccess(String result) {
+                    @Override
+                    public boolean onCache(String result) {
+                        commonBusListener.onSucceed(result);
+                        return isCacheFirst;
+                    }
 
-                commonBusListener.onSucceed(result);
-            }
+                    @Override
+                    public void onSuccess(String result) {
 
-            @Override
-            public void onError(Throwable ex, boolean isOnCallback) {
+                        commonBusListener.onSucceed(result);
+                    }
+
+                    @Override
+                    public void onError(Throwable ex, boolean isOnCallback) {
 //                        busListener.onFailed(ex.getMessage());
-                L.e(reqParam.toString() + ex.toString());
-                commonBusListener.onFailed("网络请求失败");
-            }
+                        L.e(reqParam.toString() + ex.toString());
+                        commonBusListener.onFailed("网络请求失败");
+                    }
 
-            @Override
-            public void onCancelled(CancelledException cex) {
+                    @Override
+                    public void onCancelled(CancelledException cex) {
 
-            }
+                    }
 
-            @Override
-            public void onFinished() {
+                    @Override
+                    public void onFinished() {
 
-            }
-        });
+                    }
+                })
+        );
 
+        return cancelTask;
     }
-
-
 }
