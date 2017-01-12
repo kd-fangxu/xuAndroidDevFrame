@@ -1,7 +1,5 @@
 package com.xudev.ReqUrlManage.Engine;
 
-import org.xutils.common.Callback;
-
 /**
  * Created by developer on 2017/1/12.
  */
@@ -17,10 +15,7 @@ public abstract class AbsCancelTask<T> {
         this.taskContext = taskContext;
     }
 
-    public void cacelTask() {
-        Callback.Cancelable cancelable = (Callback.Cancelable) taskContext;
-        cancelable.cancel();
-    }
+    public abstract void cacelTask() ;
 
 
 }

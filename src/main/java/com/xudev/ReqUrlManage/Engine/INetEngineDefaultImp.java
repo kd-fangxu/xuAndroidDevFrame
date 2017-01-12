@@ -60,7 +60,6 @@ public class INetEngineDefaultImp implements INetEngine {
             @Override
             public void cacelTask() {
                 taskContext.cancel();//根据不同的引擎的任务取消方法  实现不同
-                super.cacelTask();
             }
         };
         cancelTask.setTaskContext(x.http().request(httpMethodmethod, reqParam, new Callback.CacheCallback<String>() {
