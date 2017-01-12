@@ -30,19 +30,36 @@ public abstract class XuBaseActivity extends AppCompatActivity {
         mHandler = new Handler();
         initToast();
 //        setTheme(R.style.XuBaseActivityTheme);
-        setLayout();
+        setLayout(savedInstanceState);
+        loadData();
     }
 
-    public abstract void setLayout();
-
+    public abstract void setLayout(Bundle savedInstanceState);
+    protected abstract void loadData();
 
     public void showProgressDialog(String title, String msg) {
-        dialog = new MaterialDialog.Builder(this)
-                .content(msg)
-                .progress(true, 0)
-                .show();
+        if(title!=null){
+            dialog = new MaterialDialog.Builder(this)
+                    .title(title)
+                    .content(msg)
+                    .progress(true, 0)
+                    .show();
+        }else{
+            dialog = new MaterialDialog.Builder(this)
+                    .content(msg)
+                    .progress(true, 0)
+                    .show();
+        }
+
 
     }
+
+    public void dismissDialgo(){
+        if(dialog!=null){
+            dialog.dismiss();
+        }
+    }
+
     @SuppressLint("ShowToast")
     private void initToast() {
         // TODO Auto-generated method stub
@@ -75,6 +92,11 @@ public abstract class XuBaseActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         CacheManager.instance().flush();
+        if(dialog!=null){
+            dialog.dismiss();
+            dialog.cancel();
+        }
+        temToast=null;
         super.onPause();
     }
 }

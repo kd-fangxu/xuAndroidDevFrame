@@ -60,6 +60,7 @@ public class IReqBeanProviderByXyjBeanImp extends IBaseReqBeanProImp {
             environmentArray=new JSONArray(environmentStr);
         } catch (JSONException e) {
             e.printStackTrace();
+            environmentArray=new JSONArray();
         }
 
         List<ReqBean.TaskItemBean>  taskItemBeanList=new ArrayList<ReqBean.TaskItemBean>();
