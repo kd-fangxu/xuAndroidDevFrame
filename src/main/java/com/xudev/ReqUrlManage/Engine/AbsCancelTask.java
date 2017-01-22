@@ -5,7 +5,7 @@ package com.xudev.ReqUrlManage.Engine;
  */
 
 public abstract class AbsCancelTask<T> {
-    T taskContext;
+    T taskContext;//用于控制网络关闭的类的泛型
 
     public T getTaskContext() {
         return taskContext;
