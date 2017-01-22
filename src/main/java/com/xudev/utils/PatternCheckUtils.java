@@ -98,10 +98,7 @@ public class PatternCheckUtils {
 	/**
 	 * URL正则表达式 匹配 http www ftp
 	 */
-	public static final String URL = "^(http|www|ftp|)?(://)?(\\w+(-\\w+)*)(\\.(\\w+(-\\w+)*))*((:\\d+)?)(/(\\w+(-\\w+)*))*(\\.?(\\w)*)(\\?)?"
-			+ "(((\\w*%)*(\\w*\\?)*(\\w*:)*(\\w*\\+)*(\\w*\\.)*(\\w*&)*(\\w*-)*(\\w*=)*(\\w*%)*(\\w*\\?)*"
-			+ "(\\w*:)*(\\w*\\+)*(\\w*\\.)*"
-			+ "(\\w*&)*(\\w*-)*(\\w*=)*)*(\\w*)*)$";
+	public static final String URL = "^((https|http|ftp|rtsp|mms)?:\\/\\/)[^\\s]+";
 	/**
 	 * 身份证正则表达式
 	 */

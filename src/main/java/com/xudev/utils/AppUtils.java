@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import java.util.List;
@@ -85,8 +87,8 @@ public class AppUtils {
     }
 
     /**
-     *
      * 判断程序运行前后台
+     *
      * @param context
      * @return
      */
@@ -120,14 +122,48 @@ public class AppUtils {
     }
 
     /**
-     *(记得加上权限：<uses-permission android:name="android.permission.GET_TASKS"/>)
+     * (记得加上权限：<uses-permission android:name="android.permission.GET_TASKS"/>)
      * 判断mainactivity是否处于栈顶
-     * @return  true在栈顶false不在栈顶
+     *
+     * @return true在栈顶false不在栈顶
      */
-    public static boolean isActivityTop(Activity act){
+    public static boolean isActivityTop(Activity act) {
         ActivityManager manager = (ActivityManager) act.getSystemService(Context.ACTIVITY_SERVICE);
         String name = manager.getRunningTasks(1).get(0).topActivity.getClassName();
         return name.equals(act.getClass().getName());
     }
+
+
+    /**
+     * 是否有这个权限
+     *
+     * @return
+     */
+    public static boolean isAuthorised(Activity context, String permission, int requestCode) {
+        if (!isGranted(permission, context)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(context, permission)) {
+
+            } else {
+                ActivityCompat.requestPermissions(context, new String[]{permission}, requestCode);
+            }
+        } else {
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean isGranted(String permission, Activity context) {
+        return !isMarshmallow() || isGranted_(permission, context);
+    }
+
+    private static boolean isGranted_(String permission, Activity context) {
+        int checkSelfPermission = ActivityCompat.checkSelfPermission(context, permission);
+        return checkSelfPermission == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private static boolean isMarshmallow() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
+    }
+
 
 }

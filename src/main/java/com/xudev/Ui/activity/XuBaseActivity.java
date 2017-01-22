@@ -54,7 +54,7 @@ public abstract class XuBaseActivity extends AppCompatActivity {
 
     }
 
-    public void dismissDialgo(){
+    public void dismissDialog(){
         if(dialog!=null){
             dialog.dismiss();
         }
@@ -68,6 +68,9 @@ public abstract class XuBaseActivity extends AppCompatActivity {
 
 
     public void showToast(String msg) {
+        if (temToast==null){
+            temToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
+        }
         temToast.setText(msg);
         temToast.show();
     }

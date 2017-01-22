@@ -66,21 +66,29 @@ public class INetEngineDefaultImp implements INetEngine {
 
                     @Override
                     public boolean onCache(String result) {
-                        commonBusListener.onSucceed(result);
+//                    http://dx.oilchem.net/dxt/getMyDxtList.do?pagesize=10&showtitle=1&pgeId=308&accessToken=3878ad5a7835f77854873096ee8e9b41&page=1
+                      if (isCacheFirst){
+                          if(commonBusListener!=null) {
+                              commonBusListener.onSucceed(result);
+                          }
+                      }
                         return isCacheFirst;
                     }
 
                     @Override
                     public void onSuccess(String result) {
-
-                        commonBusListener.onSucceed(result);
+                        if(commonBusListener!=null) {
+                            commonBusListener.onSucceed(result);
+                        }
                     }
 
                     @Override
                     public void onError(Throwable ex, boolean isOnCallback) {
-//                        busListener.onFailed(ex.getMessage());
                         L.e(reqParam.toString() + ex.toString());
-                        commonBusListener.onFailed("网络请求失败");
+                        if(commonBusListener!=null){
+                            commonBusListener.onFailed("网络请求失败");
+                        }
+
                     }
 
                     @Override

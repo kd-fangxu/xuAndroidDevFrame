@@ -29,10 +29,15 @@ public abstract class XuBaseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mHandler = new Handler();
         initToast();
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         initVariables();
         setLayout();
         loadData();
-        return super.onCreateView(inflater, container, savedInstanceState);
+        super.onViewCreated(view, savedInstanceState);
     }
 
     protected abstract void initVariables();
@@ -40,7 +45,7 @@ public abstract class XuBaseFragment extends Fragment {
     protected abstract void loadData();
 
     @SuppressLint("ShowToast")
-    private void initToast() {
+    public void initToast() {
         // TODO Auto-generated method stub
         temToast = Toast.makeText(getActivity(), "", Toast.LENGTH_SHORT);
     }
@@ -51,6 +56,28 @@ public abstract class XuBaseFragment extends Fragment {
         temToast.show();
     }
 
+    public void showProgressDialog(String title, String msg) {
+        if(title!=null){
+            dialog = new MaterialDialog.Builder(getActivity())
+                    .title(title)
+                    .content(msg)
+                    .progress(true, 0)
+                    .show();
+        }else{
+            dialog = new MaterialDialog.Builder(getActivity())
+                    .content(msg)
+                    .progress(true, 0)
+                    .show();
+        }
+
+
+    }
+
+    public void dismissDialog(){
+        if(dialog!=null){
+            dialog.dismiss();
+        }
+    }
 
     @Override
     public void onDetach() {
