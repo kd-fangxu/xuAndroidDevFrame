@@ -13,7 +13,7 @@ import org.xutils.x;
 public class DevMainFrame {
     public static void  regester(Context context){
         x.Ext.init((Application) context);//初始化xutils3
-        x.Ext.setDebug(false); // 开启debug会影响性能
+        x.Ext.setDebug(true); // 开启debug会影响性能
         CacheManager.init(context);
     }
 }

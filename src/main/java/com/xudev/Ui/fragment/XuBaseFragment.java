@@ -23,15 +23,20 @@ public abstract class XuBaseFragment extends Fragment {
     private Toast temToast;
     public MaterialDialog dialog;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mHandler = new Handler();
+        initToast();
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mHandler = new Handler();
-        initToast();
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
+    //onCreateView是创建的时候调用，onViewCreated是在onCreateView后被触发的事件
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         initVariables();
@@ -40,10 +45,25 @@ public abstract class XuBaseFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    protected abstract void initVariables();
-    public abstract void setLayout();
-    protected abstract void loadData();
+    /**
+     * 参数初始化
+     */
+    public void initVariables() {
+    };
 
+    /**
+     * view 初始化
+     */
+    public void setLayout() {
+    };
+
+    /**
+     * 加载数据
+     */
+    public void loadData() {
+    };
+
+    @Deprecated
     @SuppressLint("ShowToast")
     public void initToast() {
         // TODO Auto-generated method stub
@@ -52,18 +72,21 @@ public abstract class XuBaseFragment extends Fragment {
 
 
     public void showToast(String msg) {
+        if (temToast == null) {
+            temToast = Toast.makeText(getActivity(), "", Toast.LENGTH_SHORT);
+        }
         temToast.setText(msg);
         temToast.show();
     }
 
     public void showProgressDialog(String title, String msg) {
-        if(title!=null){
+        if (title != null) {
             dialog = new MaterialDialog.Builder(getActivity())
                     .title(title)
                     .content(msg)
                     .progress(true, 0)
                     .show();
-        }else{
+        } else {
             dialog = new MaterialDialog.Builder(getActivity())
                     .content(msg)
                     .progress(true, 0)
@@ -73,8 +96,8 @@ public abstract class XuBaseFragment extends Fragment {
 
     }
 
-    public void dismissDialog(){
-        if(dialog!=null){
+    public void dismissDialog() {
+        if (dialog != null) {
             dialog.dismiss();
         }
     }
@@ -82,7 +105,7 @@ public abstract class XuBaseFragment extends Fragment {
     @Override
     public void onDetach() {
         CacheManager.instance().flush();
-        if(dialog!=null){
+        if (dialog != null) {
             dialog.dismiss();
             dialog.cancel();
         }
@@ -101,6 +124,7 @@ public abstract class XuBaseFragment extends Fragment {
 
     public XuBaseFragment() {
     }
+
     ;
 
 //    public static XuBaseFragment newInstance() {

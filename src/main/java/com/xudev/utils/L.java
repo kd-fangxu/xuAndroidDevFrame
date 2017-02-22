@@ -1,5 +1,6 @@
 package com.xudev.utils;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 /**
@@ -30,10 +31,20 @@ public class L {
 		if (isDebug)
 			Log.d(TAG, msg);
 	}
-
+	private static String generateTag() {
+		StackTraceElement caller = new Throwable().getStackTrace()[2];
+		String tag = "%s.%s(L:%d)";
+		String callerClazzName = caller.getClassName();
+		callerClazzName = callerClazzName.substring(callerClazzName.lastIndexOf(".") + 1);
+		tag = String.format(tag, callerClazzName, caller.getMethodName(), caller.getLineNumber());
+		tag = TextUtils.isEmpty("printout") ? tag : "printout" + ":" + tag;
+		return tag;
+	}
 	public static void e(String msg) {
 		if (isDebug)
-			Log.e(TAG, msg);
+//			Log.e(TAG, msg);
+		Log.e(generateTag(),msg);
+//		LogUtil.e(msg);
 	}
 
 	public static void v(String msg) {

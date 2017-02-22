@@ -35,7 +35,7 @@ public abstract class XuBaseActivity extends AppCompatActivity {
     }
 
     public abstract void setLayout(Bundle savedInstanceState);
-    protected abstract void loadData();
+    public  void loadData(){};
 
     public void showProgressDialog(String title, String msg) {
         if(title!=null){

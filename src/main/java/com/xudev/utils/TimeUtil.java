@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 @SuppressLint("SimpleDateFormat")
@@ -189,5 +190,44 @@ public class TimeUtil {
         }
 
         return result;
+    }
+
+    /**
+     * 获取月单位偏移量
+     * @param date
+     * @param offset
+     * @return
+     */
+    public static Date getDateMonthOffset(Date date,int offset){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.MONTH, offset);
+        return cal.getTime();
+    }
+
+    /**
+     * 获取当前月份第一天
+     * @param date
+     * @return
+     */
+    public static  Date getFirstDayInMonth(Date date){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.DAY_OF_MONTH,1);//设置为1号,当前日期既为本月第一天
+        return  cal.getTime();
+    }
+
+    /**
+     * 获取当前月份最后一天
+     * @param date
+     * @return
+     */
+    public static  Date getLastDayInMonth(Date date){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.MONTH,+1);
+        cal.set(Calendar.DAY_OF_MONTH,1);//设置为1号,当前日期既为本月第一天
+        cal.add(Calendar.DAY_OF_MONTH,-1);
+        return  cal.getTime();
     }
 }
