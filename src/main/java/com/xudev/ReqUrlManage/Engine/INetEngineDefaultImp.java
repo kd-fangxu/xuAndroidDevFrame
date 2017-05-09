@@ -77,7 +77,7 @@ public class INetEngineDefaultImp implements INetEngine {
 
                     @Override
                     public void onSuccess(String result) {
-                        if(commonBusListener!=null) {
+                        if(commonBusListener!=null&&result!=null) {
                             commonBusListener.onSucceed(result);
                         }
                     }

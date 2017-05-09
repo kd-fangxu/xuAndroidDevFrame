@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-
+apply plugin: 'com.neenbedankt.android-apt'
 android {
     compileSdkVersion 25
     buildToolsVersion '25.0.0'
@@ -7,13 +7,11 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 25
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = [moduleName: project.getName()]
-            }
-        }
     }
-
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
     buildTypes {
 //        release {
 //            minifyEnabled false
@@ -22,19 +20,25 @@ android {
     }
 }
 
+
 allprojects {
     repositories {
         jcenter()
         maven { url "https://jitpack.io" }
     }
 }
-
+apt {
+    arguments {
+        moduleName project.getName();
+    }
 dependencies {
     compile 'org.xutils:xutils:3.3.40'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.blankj:utilcode:1.3.7'
-    compile 'com.alibaba:arouter-api:1.2.0'
-    annotationProcessor 'com.alibaba:arouter-compiler:1.1.0'
+
+    compile 'com.alibaba:arouter-api:1.2.1'
+    apt 'com.alibaba:arouter-compiler:1.1.2'
+
     compile 'com.google.code.gson:gson:2.2.3'
     compile files('libs/listviewanimations_lib-core_3.1.0.jar')
     compile 'com.nineoldandroids:library:2.4.0'
@@ -52,4 +56,5 @@ dependencies {
 
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
+}
 }

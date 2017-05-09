@@ -11,7 +11,7 @@ public class BasePresenter<T extends IBaseUiAction> {
 
 
     public void showToast(String msg) {
-
+mViewRef.get().showToast(msg);
     }
 
     public void attachView(T view) {
