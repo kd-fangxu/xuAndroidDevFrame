@@ -1,20 +1,30 @@
 package com.xudev.ReqUrlManage;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.view.View;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.xudev.ReqUrlManage.Engine.AbsCancelTask;
 import com.xudev.ReqUrlManage.Engine.INetEngine;
 import com.xudev.ReqUrlManage.Engine.INetEngineDefaultImp;
+import com.xudev.ReqUrlManage.Model.RequestEnvironment;
 import com.xudev.ReqUrlManage.ReqBeanProvider.IBaseReqBeanProImp;
 import com.xudev.ReqUrlManage.ReqBeanProvider.IReqBeanProvider;
 import com.xudev.ReqUrlManage.ReqBeanProvider.IRequestConfigStrProvider;
 import com.xudev.ReqUrlManage.ReqBeanProvider.ReqBean;
 import com.xudev.iface.OnCommonBusListener;
 import com.xudev.utils.PatternCheckUtils;
+import com.xudev.utils.SPUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,7 +37,36 @@ public class RequestManager {
     private static ReqBean reqBean;
     private static INetEngine netEngine;
     private IRequestConfigStrProvider strProvider;
-    private IReqBeanProvider reqBeanProvider;
+    public IBaseReqBeanProImp reqBeanProvider;
+//    private String AbsoluteHeaderStr;//请求地址标头  优先级大于 配置文件
+
+    public List<RequestEnvironment> getRequestEnvironmentList() {
+        return requestEnvironmentList;
+    }
+
+    /**
+     * 设置环境列表
+     * @param requestEnvironmentList
+     */
+    public void setRequestEnvironmentList(List<RequestEnvironment> requestEnvironmentList) {
+        this.requestEnvironmentList = requestEnvironmentList;
+        if (requestEnvironmentList.size() > 0) {
+            String environName = (String) SPUtils.get(manager.context, "RequestEnvironment", "");//若存在配置
+            if (environName.length() > 0) {
+                for (int i = 0; i < requestEnvironmentList.size(); i++) {
+                    if (environName.equals(requestEnvironmentList.get(i).getName())){
+                        EnvironmentSelectdeIndex=i;
+                        break;
+                    }
+                }
+                reqBeanProvider.setRequestEnvironment(requestEnvironmentList.get(EnvironmentSelectdeIndex));
+                reqBean=reqBeanProvider.getReqBean();
+            }
+
+        }
+    }
+
+    private List<RequestEnvironment> requestEnvironmentList;//请求环境列表
 
     private RequestManager() {
     }
@@ -60,7 +99,8 @@ public class RequestManager {
         return getInstance(manager.reqBeanProvider);
     }
 
-    public synchronized static RequestManager getInstance(IReqBeanProvider provider) {
+
+    public synchronized static RequestManager getInstance(IBaseReqBeanProImp provider) {
         if (manager == null) {
             try {
                 throw new Exception("RequestManager did not register");
@@ -69,6 +109,7 @@ public class RequestManager {
             }
         }
         if (manager.reqBean == null) {
+            manager.reqBeanProvider = provider;
             manager.reqBean = provider.getReqBean();
         }
         manager.setNetEngine(new INetEngineDefaultImp());
@@ -76,8 +117,22 @@ public class RequestManager {
 
     }
 
+
+//    public String getAbsoluteHeaderStr() {
+//        return AbsoluteHeaderStr;
+//    }
+//
+//    public void setAbsoluteHeaderStr(String absoluteHeaderStr) {
+//        AbsoluteHeaderStr = absoluteHeaderStr;
+//        if (reqBeanProvider != null) {
+//            reqBeanProvider.setAbsoluteHeaderStr(absoluteHeaderStr);
+//            reqBean = reqBeanProvider.getReqBean();
+//        }
+//    }
+
     /**
      * 获取请求参数配置对象
+     *
      * @param iReqBeanProvider
      */
     public void getReqBean(IReqBeanProvider iReqBeanProvider) {
@@ -283,5 +338,62 @@ public class RequestManager {
             }
         }
         return true;
+    }
+
+    int EnvironmentSelectdeIndex = -1;
+
+    public void showEnvirmentListDilog(final Context mContext) {
+        if (requestEnvironmentList == null) {
+            return;
+        }
+        List<String> itemList = new ArrayList<String>();
+        if (requestEnvironmentList != null) {
+            for (int i = 0; i < requestEnvironmentList.size(); i++) {
+                RequestEnvironment en = requestEnvironmentList.get(i);
+                itemList.add(en.getName());
+            }
+        }
+        if (reqBeanProvider.getRequestEnvironment() != null) {
+            for (int i = 0; i < itemList.size(); i++) {
+                if (reqBeanProvider.getRequestEnvironment().getName().equals(itemList.get(i))) {
+                    EnvironmentSelectdeIndex = i;
+                    break;
+                }
+            }
+        }
+        new MaterialDialog.Builder(mContext)
+
+                .title("环境选择")
+                .items(itemList)
+                .itemsCallbackSingleChoice(EnvironmentSelectdeIndex, new MaterialDialog.ListCallbackSingleChoice() {
+                    @Override
+                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        /**
+                         * If you use alwaysCallSingleChoiceCallback(), which is discussed below,
+                         * returning false here won't allow the newly selected radio button to actually be selected.
+                         **/
+                        EnvironmentSelectdeIndex = which;
+                        if (EnvironmentSelectdeIndex >= 0) {
+                            RequestEnvironment rq = requestEnvironmentList.get(EnvironmentSelectdeIndex);
+                            reqBeanProvider.setRequestEnvironment(rq);
+                            reqBean = reqBeanProvider.getReqBean();
+                            ToastUtils.showLongToast(rq.getName() + "环境已配置");
+//                            rq.getVars()
+                            LogUtils.e(reqBean);
+                            SPUtils.put(mContext, "RequestEnvironment", rq.getName());
+
+                        }
+                        return true;
+                    }
+                })
+                .positiveText("确认")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//                        LogUtils.e("222");
+                    }
+                })
+                .show();
+
     }
 }
