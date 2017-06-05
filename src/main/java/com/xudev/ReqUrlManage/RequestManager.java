@@ -38,32 +38,59 @@ public class RequestManager {
     private static INetEngine netEngine;
     private IRequestConfigStrProvider strProvider;
     public IBaseReqBeanProImp reqBeanProvider;
-//    private String AbsoluteHeaderStr;//请求地址标头  优先级大于 配置文件
+
+    /**
+     * 设置绝对头部地址  优先级 大于 环境配置
+     *
+     * @param absoluteHeaderStr
+     */
+    public void setAbsoluteHeaderStr(String absoluteHeaderStr) {
+        AbsoluteHeaderStr = absoluteHeaderStr;
+        SPUtils.put(context, "AbsoluteHeaderStr", absoluteHeaderStr);
+        //清空保存条件
+        RefreshReqBean();
+    }
+
+    private String AbsoluteHeaderStr;//请求地址标头  优先级大于 配置文件
 
     public List<RequestEnvironment> getRequestEnvironmentList() {
         return requestEnvironmentList;
     }
 
-    /**
-     * 设置环境列表
-     * @param requestEnvironmentList
-     */
-    public void setRequestEnvironmentList(List<RequestEnvironment> requestEnvironmentList) {
-        this.requestEnvironmentList = requestEnvironmentList;
-        if (requestEnvironmentList.size() > 0) {
+    public void RefreshReqBean() {
+        AbsoluteHeaderStr = (String) SPUtils.get(context, "AbsoluteHeaderStr", "");
+        if (AbsoluteHeaderStr != null && AbsoluteHeaderStr.length() > 0) {
+            reqBeanProvider.setAbsoluteHeaderStr(AbsoluteHeaderStr);
+            reqBean = reqBeanProvider.getReqBean();
+            return;
+        }
+
+        if (requestEnvironmentList != null && requestEnvironmentList.size() > 0) {
             String environName = (String) SPUtils.get(manager.context, "RequestEnvironment", "");//若存在配置
             if (environName.length() > 0) {
                 for (int i = 0; i < requestEnvironmentList.size(); i++) {
-                    if (environName.equals(requestEnvironmentList.get(i).getName())){
-                        EnvironmentSelectdeIndex=i;
+                    if (environName.equals(requestEnvironmentList.get(i).getName())) {
+                        EnvironmentSelectdeIndex = i;
                         break;
                     }
                 }
                 reqBeanProvider.setRequestEnvironment(requestEnvironmentList.get(EnvironmentSelectdeIndex));
-                reqBean=reqBeanProvider.getReqBean();
+                reqBean = reqBeanProvider.getReqBean();
             }
-
+            return;
         }
+        reqBean = reqBeanProvider.getReqBean();
+    }
+
+    /**
+     * 设置环境列表(代码设置在)
+     *
+     * @param requestEnvironmentList
+     */
+    public void setRequestEnvironmentList(List<RequestEnvironment> requestEnvironmentList) {
+        this.requestEnvironmentList = requestEnvironmentList;
+
+        RefreshReqBean();
     }
 
     private List<RequestEnvironment> requestEnvironmentList;//请求环境列表
@@ -258,7 +285,7 @@ public class RequestManager {
                     continue;
                 }
                 if (param.isIsNessary() && !mapParam.containsKey(param.getKey())) {
-                    if (busListener!=null){
+                    if (busListener != null) {
                         busListener.onFailed("缺少key值为" + param.getKey() + "的必要参数");
                     }
                     return null;
@@ -340,7 +367,7 @@ public class RequestManager {
         return true;
     }
 
-    int EnvironmentSelectdeIndex = -1;
+    int EnvironmentSelectdeIndex = 0;
 
     public void showEnvirmentListDilog(final Context mContext) {
         if (requestEnvironmentList == null) {
@@ -376,6 +403,8 @@ public class RequestManager {
                         if (EnvironmentSelectdeIndex >= 0) {
                             RequestEnvironment rq = requestEnvironmentList.get(EnvironmentSelectdeIndex);
                             reqBeanProvider.setRequestEnvironment(rq);
+                            reqBeanProvider.setAbsoluteHeaderStr(null);//绝对头部制空
+                            SPUtils.remove(mContext,"AbsoluteHeaderStr");
                             reqBean = reqBeanProvider.getReqBean();
                             ToastUtils.showLongToast(rq.getName() + "环境已配置");
 //                            rq.getVars()
@@ -387,6 +416,7 @@ public class RequestManager {
                     }
                 })
                 .positiveText("确认")
+                .negativeText("设置自定义")
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {

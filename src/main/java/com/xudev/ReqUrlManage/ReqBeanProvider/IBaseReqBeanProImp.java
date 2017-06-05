@@ -9,12 +9,18 @@ import com.xudev.ReqUrlManage.Model.RequestEnvironment;
  */
 
 public abstract class IBaseReqBeanProImp implements IReqBeanProvider {
-    public IRequestConfigStrProvider getStrProvider() {
-        return strProvider;
-    }
 
     IRequestConfigStrProvider strProvider;
     Context context;
+    RequestEnvironment requestEnvironment;
+    /**
+     * 设置绝对环境前缀
+     */
+    public String AbsoluteHeaderStr;
+
+    public IRequestConfigStrProvider getStrProvider() {
+        return strProvider;
+    }
 
     public void setRequestEnvironment(RequestEnvironment requestEnvironment) {
         this.requestEnvironment = requestEnvironment;
@@ -24,16 +30,12 @@ public abstract class IBaseReqBeanProImp implements IReqBeanProvider {
         return requestEnvironment;
     }
 
-    RequestEnvironment requestEnvironment;
 
-//    public void setAbsoluteHeaderStr(String absoluteHeaderStr) {
-//        this.AbsoluteHeaderStr = absoluteHeaderStr;
-//    }
+    public void setAbsoluteHeaderStr(String absoluteHeaderStr) {
+        this.AbsoluteHeaderStr = absoluteHeaderStr;
+    }
 
-//    /**
-//     * 设置绝对环境前缀
-//     */
-//    public String AbsoluteHeaderStr;
+
 
     public IBaseReqBeanProImp(IRequestConfigStrProvider strProvider, Context context) {
         this.context = context;

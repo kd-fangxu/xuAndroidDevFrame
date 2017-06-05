@@ -101,7 +101,12 @@ public class IReqBeanProviderByXyjBeanImp extends IBaseReqBeanProImp {
                                     String tag = "$" + varBean.getName() + "$";
                                     String value = varBean.getValue();
                                     if (temUrl.contains(tag)) {
-                                       temUrl= temUrl.replace(tag, value);
+                                        if (AbsoluteHeaderStr!=null&&AbsoluteHeaderStr.length()>0){//存在绝对头部时优先设置头部
+                                            temUrl=temUrl.replace(tag,AbsoluteHeaderStr);
+                                        }else{
+                                            temUrl= temUrl.replace(tag, value);
+                                        }
+
                                         break;
                                     }
                                 }
