@@ -85,7 +85,7 @@ public class IReqBeanProviderByXyjBeanImp extends IBaseReqBeanProImp {
                                           String tag="$"+temJO.getString("name")+"$";
                                           String replaceMentStr=temJO.getString("value");
                                           temUrl=temUrl.replace(tag,replaceMentStr);
-                                          break Finish;
+                                          break Finish;//跳出嵌套循环
                                       }
                                   }
 

@@ -203,7 +203,9 @@ public class RequestManager {
                     continue;
                 }
                 if (param.isIsNessary() && !mapParam.containsKey(param.getKey())) {
-                    busListener.onFailed("缺少key值为" + param.getKey() + "的必要参数");
+                    if (busListener!=null){
+                        busListener.onFailed("缺少key值为" + param.getKey() + "的必要参数");
+                    }
                     return null;
                 }
                 if (!mapParam.containsKey(param.getKey())) {
