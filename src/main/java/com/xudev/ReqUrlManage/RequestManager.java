@@ -3,6 +3,7 @@ package com.xudev.ReqUrlManage;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.EditText;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -47,6 +48,7 @@ public class RequestManager {
     public void setAbsoluteHeaderStr(String absoluteHeaderStr) {
         AbsoluteHeaderStr = absoluteHeaderStr;
         SPUtils.put(context, "AbsoluteHeaderStr", absoluteHeaderStr);
+        SPUtils.remove(context, "RequestEnvironment");
         //清空保存条件
         RefreshReqBean();
     }
@@ -367,6 +369,26 @@ public class RequestManager {
         return true;
     }
 
+
+    public void showCustomHeaderEditDialog(Context mContext) {
+        final EditText et = new EditText(mContext);
+        new MaterialDialog.Builder(mContext).title("设置请求头")
+                .customView(et, true)
+                .positiveText("确定")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                        String content = et.getText().toString();
+                        if (content.length() > 0 && content.contains("http")) {
+                            setAbsoluteHeaderStr(content);
+                        }
+                    }
+                })
+                .negativeText("取消")
+                .show();
+    }
+
     int EnvironmentSelectdeIndex = 0;
 
     public void showEnvirmentListDilog(final Context mContext) {
@@ -388,10 +410,22 @@ public class RequestManager {
                 }
             }
         }
+        String content = "";
+        if (AbsoluteHeaderStr != null && AbsoluteHeaderStr.length() > 0) {
+            content = "自定义地址：" + AbsoluteHeaderStr;
+            EnvironmentSelectdeIndex=-1;
+        } else if (reqBeanProvider.getRequestEnvironment() != null) {
+            content = "环境参数：";
+            for (RequestEnvironment.VarsBean varsBean : reqBeanProvider.getRequestEnvironment().getVars()) {
+                content = content + "\n" + "key: " + varsBean.getName() + "\n value:" + varsBean.getValue();
+            }
+
+        }
         new MaterialDialog.Builder(mContext)
 
                 .title("环境选择")
                 .items(itemList)
+                .content(content)
                 .itemsCallbackSingleChoice(EnvironmentSelectdeIndex, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
@@ -404,11 +438,9 @@ public class RequestManager {
                             RequestEnvironment rq = requestEnvironmentList.get(EnvironmentSelectdeIndex);
                             reqBeanProvider.setRequestEnvironment(rq);
                             reqBeanProvider.setAbsoluteHeaderStr(null);//绝对头部制空
-                            SPUtils.remove(mContext,"AbsoluteHeaderStr");
+                            SPUtils.remove(mContext, "AbsoluteHeaderStr");
                             reqBean = reqBeanProvider.getReqBean();
                             ToastUtils.showLongToast(rq.getName() + "环境已配置");
-//                            rq.getVars()
-                            LogUtils.e(reqBean);
                             SPUtils.put(mContext, "RequestEnvironment", rq.getName());
 
                         }
@@ -421,6 +453,12 @@ public class RequestManager {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 //                        LogUtils.e("222");
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        showCustomHeaderEditDialog(mContext);
                     }
                 })
                 .show();
