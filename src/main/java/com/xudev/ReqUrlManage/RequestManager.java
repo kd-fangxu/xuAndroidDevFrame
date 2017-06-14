@@ -7,7 +7,6 @@ import android.widget.EditText;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.xudev.ReqUrlManage.Engine.AbsCancelTask;
 import com.xudev.ReqUrlManage.Engine.INetEngine;
@@ -91,7 +90,6 @@ public class RequestManager {
      */
     public void setRequestEnvironmentList(List<RequestEnvironment> requestEnvironmentList) {
         this.requestEnvironmentList = requestEnvironmentList;
-
         RefreshReqBean();
     }
 
@@ -147,18 +145,6 @@ public class RequestManager {
     }
 
 
-//    public String getAbsoluteHeaderStr() {
-//        return AbsoluteHeaderStr;
-//    }
-//
-//    public void setAbsoluteHeaderStr(String absoluteHeaderStr) {
-//        AbsoluteHeaderStr = absoluteHeaderStr;
-//        if (reqBeanProvider != null) {
-//            reqBeanProvider.setAbsoluteHeaderStr(absoluteHeaderStr);
-//            reqBean = reqBeanProvider.getReqBean();
-//        }
-//    }
-
     /**
      * 获取请求参数配置对象
      *
@@ -174,6 +160,64 @@ public class RequestManager {
 
     ReqBean.TaskItemBean currentTaskItem = null;
 
+    public String getRequestUrlByTaskId(String taskId) throws Exception {
+        return getRequestUrl(taskId, null);
+    }
+
+    /**
+     * 判断taskid 对应的必要参数时候缺失
+     *
+     * @param taskid
+     * @param mapParam    待请求参数
+     * @param busListener
+     * @return
+     * @throws Exception
+     */
+    public boolean isParamsNessaryValueLost(String taskid, Map<String, Object> mapParam, OnCommonBusListener<String> busListener) throws Exception {
+//        getRequestUrl(taskid, busListener);//赋值currentRequestItem
+        ReqBean.TaskItemBean itemBean = getItemBeanByTaskId(taskid, busListener);
+        StringBuffer msg = new StringBuffer();
+        if (itemBean.getParams() != null) {
+            for (ReqBean.TaskItemBean.ParamsBean param : itemBean.getParams()) {//注意这种实现 是严格遵守配置文档的参数进行 param设置的 如果mapParam 存在配置中不存在的key值将会被忽略
+                if (param.getKey() == null) {
+                    continue;
+                }
+                if (param.getKey().equals("")) {
+                    continue;
+                }
+                if (param.isIsNessary() && !mapParam.containsKey(param.getKey())) {
+                    msg.append("taskid: " + taskid + " 缺少key值为 " + param.getKey() + " 的必要参数\n");
+//                    return true;
+                }
+                if (!mapParam.containsKey(param.getKey())) {
+                    continue;
+                }
+            }
+            if (busListener != null && msg.toString().length() > 0) {
+                busListener.onFailed(msg.toString());
+                return true;
+            }
+
+        }
+        return false;
+    }
+
+    private ReqBean.TaskItemBean getItemBeanByTaskId(String taskid, OnCommonBusListener<String> busListener) {
+        if (reqBean == null) {
+            return null;
+        }
+        for (ReqBean.TaskItemBean itemBean : reqBean.getList()) {
+            if (itemBean.getTaskId().equals(taskid)) {
+                return itemBean;
+            }
+        }
+        return null;
+    }
+
+    public String getRequestUrl(String taskId) throws Exception {
+        return getRequestUrl(taskId, null);
+    }
+
     /**
      * 根据taskid 获取对应 url
      *
@@ -181,53 +225,57 @@ public class RequestManager {
      * @param busListener
      * @return
      */
-    public String getRequestUrl(String taskId, OnCommonBusListener<String> busListener) {
-        currentTaskItem = null;
+    public String getRequestUrl(String taskId, OnCommonBusListener<String> busListener) throws Exception {
         if (reqBean == null) {
             if (busListener != null) {
                 busListener.onFailed("无配置文件或文件解析出错");
+            } else {
+                throw new Exception("无配置文件或文件解析出错");
             }
-
             return null;
         }
-        for (ReqBean.TaskItemBean itemBean : reqBean.getList()) {
-            if (itemBean.getTaskId().equals(taskId)) {
-                currentTaskItem = itemBean;
-                break;
-            }
-        }
-
+        currentTaskItem = null;
+        currentTaskItem = getItemBeanByTaskId(taskId, busListener);
         if (null == currentTaskItem) {
+            String msg = "不存在taskId:" + taskId + "映射的taskItem 请检查配置文件";
             if (busListener != null) {
-                busListener.onFailed("不存在taskId映射的taskItem 请检查配置文件");
+                busListener.onFailed(msg);
+            } else {
+                throw new Exception(msg);
             }
             return null;
         }
-
         if (currentTaskItem.getUrl() == null) {
+            String msg = "taskid: " + taskId + " 映射的taskItem Url 为 null";
             if (busListener != null) {
-                busListener.onFailed("taskItem Url 为 null");
+                busListener.onFailed(msg);
+            } else {
+                throw new Exception(msg);
             }
             return null;
 
         }
-
         String reqUrl;
-
         if (PatternCheckUtils.isUrl(currentTaskItem.getUrl()))//如果taskItem url 本身为完整路径 则不加载域名
         {
             reqUrl = currentTaskItem.getUrl();
         } else {
             if (reqBean.getDomainName() == null) {
+                String msg = "DomainName为null";
                 if (busListener != null) {
-                    busListener.onFailed("DomainName为null");
+                    busListener.onFailed(msg);
+                } else {
+                    throw new Exception(msg);
                 }
                 return null;
             }
             reqUrl = reqBean.getDomainName() + currentTaskItem.getUrl();
             if (!PatternCheckUtils.isUrl(reqUrl)) {
+                String msg = "请求地址不合法，请检查domainName和taskItem URL 组合规则 domainName+taskItemUrl";
                 if (busListener != null) {
-                    busListener.onFailed("请求地址不合法，请检查domainName和taskItem URL 组合规则 domainName+taskItemUrl");
+                    busListener.onFailed(msg);
+                } else {
+                    throw new Exception(msg);
                 }
                 return null;
             }
@@ -277,26 +325,7 @@ public class RequestManager {
         if (null == reqUrl) {
             return null;
         }
-
-        if (currentTaskItem.getParams() != null) {
-            for (ReqBean.TaskItemBean.ParamsBean param : currentTaskItem.getParams()) {//注意这种实现 是严格遵守配置文档的参数进行 param设置的 如果mapParam 存在配置中不存在的key值将会被忽略
-                if (param.getKey() == null) {
-                    continue;
-                }
-                if (param.getKey().equals("")) {
-                    continue;
-                }
-                if (param.isIsNessary() && !mapParam.containsKey(param.getKey())) {
-                    if (busListener != null) {
-                        busListener.onFailed("缺少key值为" + param.getKey() + "的必要参数");
-                    }
-                    return null;
-                }
-                if (!mapParam.containsKey(param.getKey())) {
-                    continue;
-                }
-            }
-
+        if (!isParamsNessaryValueLost(TaskId, mapParam, busListener)) {//判断是否缺少不要参数
             String httpMethod = "get";
             if (currentTaskItem.getRequestMethod() != null && !currentTaskItem.getRequestMethod().equals("")) {
                 httpMethod = currentTaskItem.getRequestMethod().toLowerCase();
@@ -382,6 +411,7 @@ public class RequestManager {
                         String content = et.getText().toString();
                         if (content.length() > 0 && content.contains("http")) {
                             setAbsoluteHeaderStr(content);
+                            ToastUtils.showLongToast("强制请求头" + content + "已配置");
                         }
                     }
                 })
@@ -413,7 +443,7 @@ public class RequestManager {
         String content = "";
         if (AbsoluteHeaderStr != null && AbsoluteHeaderStr.length() > 0) {
             content = "自定义地址：" + AbsoluteHeaderStr;
-            EnvironmentSelectdeIndex=-1;
+            EnvironmentSelectdeIndex = -1;
         } else if (reqBeanProvider.getRequestEnvironment() != null) {
             content = "环境参数：";
             for (RequestEnvironment.VarsBean varsBean : reqBeanProvider.getRequestEnvironment().getVars()) {
