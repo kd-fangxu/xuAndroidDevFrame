@@ -1,5 +1,7 @@
 package com.xudev.ReqUrlManage.Engine;
 
+import com.xudev.ReqUrlManage.RequestParams.BaseRequestParams;
+import com.xudev.ReqUrlManage.RequestParams.ParamsItem;
 import com.xudev.iface.OnCommonBusListener;
 import com.xudev.utils.L;
 
@@ -8,6 +10,7 @@ import org.xutils.http.HttpMethod;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
+import java.io.File;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -16,6 +19,7 @@ import java.util.Map;
  */
 
 public class INetEngineDefaultImp implements INetEngine {
+
     /**
      * 默认采用xHttp实现
      *
@@ -26,26 +30,8 @@ public class INetEngineDefaultImp implements INetEngine {
      * @param commonBusListener
      */
     @Override
-    public AbsCancelTask doRequest(String url, Map<String, Object> params, String method, final boolean isCacheFirst, final OnCommonBusListener<String> commonBusListener) {
+    public AbsCancelTask doRequest(String url, BaseRequestParams params, String method, final boolean isCacheFirst, final OnCommonBusListener<String> commonBusListener) {
         final RequestParams reqParam = new RequestParams(url);
-        if (params != null) {
-            Iterator entries = params.entrySet().iterator();
-            while (entries.hasNext()) {
-                Map.Entry entry = (Map.Entry) entries.next();
-                reqParam.addParameter((String) entry.getKey(), entry.getValue());
-            }
-        }
-
-//            final String cacheKey = reqParam.toString();
-//            if (isCatcheFirst) {//缓存优先
-//
-//                String result = ACache.get(context).getAsString(MD5.md5(cacheKey));
-//                if (result != null) {
-//                    busListener.onSucceed(result);
-//                    return;
-//                }
-//
-//            }
 
         HttpMethod httpMethodmethod = HttpMethod.GET;
         if (method.equals("get")) {
@@ -55,7 +41,19 @@ public class INetEngineDefaultImp implements INetEngine {
         } else {
             httpMethodmethod = HttpMethod.GET;
         }
-
+        if (params != null) {
+            for (ParamsItem items : params.getItemList()) {
+                if (items.getValue() instanceof File) {
+                    reqParam.setMultipart(true);
+                }
+                reqParam.addParameter(items.getKey(), items.getValue());
+            }
+//            Iterator entries = params.entrySet().iterator();
+//            while (entries.hasNext()) {
+//                Map.Entry entry = (Map.Entry) entries.next();
+//                reqParam.addParameter((String) entry.getKey(), entry.getValue());
+//            }
+        }
         AbsCancelTask<Callback.Cancelable> cancelTask = new AbsCancelTask<Callback.Cancelable>() {
             @Override
             public void cancelTask() {
@@ -67,17 +65,17 @@ public class INetEngineDefaultImp implements INetEngine {
                     @Override
                     public boolean onCache(String result) {
 //                    http://dx.oilchem.net/dxt/getMyDxtList.do?pagesize=10&showtitle=1&pgeId=308&accessToken=3878ad5a7835f77854873096ee8e9b41&page=1
-                      if (isCacheFirst){
-                          if(commonBusListener!=null) {
-                              commonBusListener.onSucceed(result);
-                          }
-                      }
+                        if (isCacheFirst) {
+                            if (commonBusListener != null) {
+                                commonBusListener.onSucceed(result);
+                            }
+                        }
                         return isCacheFirst;
                     }
 
                     @Override
                     public void onSuccess(String result) {
-                        if(commonBusListener!=null&&result!=null) {
+                        if (commonBusListener != null && result != null) {
                             commonBusListener.onSucceed(result);
                         }
                     }
@@ -85,7 +83,7 @@ public class INetEngineDefaultImp implements INetEngine {
                     @Override
                     public void onError(Throwable ex, boolean isOnCallback) {
                         L.e(reqParam.toString() + ex.toString());
-                        if(commonBusListener!=null){
+                        if (commonBusListener != null) {
                             commonBusListener.onFailed("网络请求失败");
                         }
 
@@ -105,4 +103,5 @@ public class INetEngineDefaultImp implements INetEngine {
 
         return cancelTask;
     }
+
 }

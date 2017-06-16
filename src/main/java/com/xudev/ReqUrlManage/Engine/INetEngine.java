@@ -1,5 +1,6 @@
 package com.xudev.ReqUrlManage.Engine;
 
+import com.xudev.ReqUrlManage.RequestParams.BaseRequestParams;
 import com.xudev.iface.OnCommonBusListener;
 
 import java.util.Map;
@@ -10,6 +11,6 @@ import java.util.Map;
 
 public interface INetEngine {
 
-    AbsCancelTask doRequest(String url, Map<String, Object> params, String method,boolean isCacheFirst ,OnCommonBusListener<String> commonBusListener);
+    AbsCancelTask doRequest(String url, BaseRequestParams params, String method, boolean isCacheFirst, OnCommonBusListener<String> commonBusListener);
 
 }

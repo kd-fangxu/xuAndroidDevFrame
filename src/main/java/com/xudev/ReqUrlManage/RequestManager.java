@@ -16,6 +16,7 @@ import com.xudev.ReqUrlManage.ReqBeanProvider.IBaseReqBeanProImp;
 import com.xudev.ReqUrlManage.ReqBeanProvider.IReqBeanProvider;
 import com.xudev.ReqUrlManage.ReqBeanProvider.IRequestConfigStrProvider;
 import com.xudev.ReqUrlManage.ReqBeanProvider.ReqBean;
+import com.xudev.ReqUrlManage.RequestParams.BaseRequestParams;
 import com.xudev.iface.OnCommonBusListener;
 import com.xudev.utils.PatternCheckUtils;
 import com.xudev.utils.SPUtils;
@@ -38,6 +39,7 @@ public class RequestManager {
     private static INetEngine netEngine;
     private IRequestConfigStrProvider strProvider;
     public IBaseReqBeanProImp reqBeanProvider;
+    private String AbsoluteHeaderStr;//请求地址标头  优先级大于 配置文件
 
     /**
      * 设置绝对头部地址  优先级 大于 环境配置
@@ -52,7 +54,6 @@ public class RequestManager {
         RefreshReqBean();
     }
 
-    private String AbsoluteHeaderStr;//请求地址标头  优先级大于 配置文件
 
     public List<RequestEnvironment> getRequestEnvironmentList() {
         return requestEnvironmentList;
@@ -174,23 +175,17 @@ public class RequestManager {
      * @throws Exception
      */
     public boolean isParamsNessaryValueLost(String taskid, Map<String, Object> mapParam, OnCommonBusListener<String> busListener) throws Exception {
-//        getRequestUrl(taskid, busListener);//赋值currentRequestItem
+        return isParamsNessaryValueLost(taskid, BaseRequestParams.covertFormMap(mapParam), busListener);
+    }
+
+
+    public boolean isParamsNessaryValueLost(String taskid, BaseRequestParams params, OnCommonBusListener<String> busListener) throws Exception {
         ReqBean.TaskItemBean itemBean = getItemBeanByTaskId(taskid, busListener);
         StringBuffer msg = new StringBuffer();
         if (itemBean.getParams() != null) {
             for (ReqBean.TaskItemBean.ParamsBean param : itemBean.getParams()) {//注意这种实现 是严格遵守配置文档的参数进行 param设置的 如果mapParam 存在配置中不存在的key值将会被忽略
-                if (param.getKey() == null) {
-                    continue;
-                }
-                if (param.getKey().equals("")) {
-                    continue;
-                }
-                if (param.isIsNessary() && !mapParam.containsKey(param.getKey())) {
-                    msg.append("taskid: " + taskid + " 缺少key值为 " + param.getKey() + " 的必要参数\n");
-//                    return true;
-                }
-                if (!mapParam.containsKey(param.getKey())) {
-                    continue;
+                if (param.isIsNessary() && !params.hasKey(param.getKey())) {
+                    msg.append("taskid: (" + taskid + ") 缺少key值为 " + param.getKey() + " 的必要参数\n");
                 }
             }
             if (busListener != null && msg.toString().length() > 0) {
@@ -296,6 +291,10 @@ public class RequestManager {
         this.doRequest(TaskId, mapParam, busListener, false);
     }
 
+    public void doRequest(String TaskId, BaseRequestParams mapParam, OnCommonBusListener<String> busListener) throws Exception {
+        this.doRequest(TaskId, mapParam, busListener, false);
+    }
+
     /**
      * 执行一个配置请求
      *
@@ -306,6 +305,10 @@ public class RequestManager {
      * @throws Exception
      */
     public void doRequest(String TaskId, Map<String, Object> mapParam, final OnCommonBusListener<String> busListener, boolean isCatcheFirst) throws Exception {
+        doRequestInControll(TaskId, mapParam, busListener, isCatcheFirst);
+    }
+
+    public void doRequest(String TaskId, BaseRequestParams mapParam, final OnCommonBusListener<String> busListener, boolean isCatcheFirst) throws Exception {
         doRequestInControll(TaskId, mapParam, busListener, isCatcheFirst);
     }
 
@@ -321,16 +324,21 @@ public class RequestManager {
      */
     public AbsCancelTask doRequestInControll(String TaskId, Map<String, Object> mapParam, final OnCommonBusListener<String> busListener, boolean isCatcheFirst) throws Exception {
 
+        return doRequestInControll(TaskId, BaseRequestParams.covertFormMap(mapParam), busListener, isCatcheFirst);
+    }
+
+    public AbsCancelTask doRequestInControll(String TaskId, BaseRequestParams requestParam, final OnCommonBusListener<String> busListener, boolean isCatcheFirst) throws Exception {
+
         String reqUrl = getRequestUrl(TaskId, busListener);
         if (null == reqUrl) {
             return null;
         }
-        if (!isParamsNessaryValueLost(TaskId, mapParam, busListener)) {//判断是否缺少不要参数
+        if (!isParamsNessaryValueLost(TaskId, requestParam, busListener)) {//判断是否缺少不要参数
             String httpMethod = "get";
             if (currentTaskItem.getRequestMethod() != null && !currentTaskItem.getRequestMethod().equals("")) {
                 httpMethod = currentTaskItem.getRequestMethod().toLowerCase();
             }
-            AbsCancelTask taskCancel = doCommonRequest(reqUrl, mapParam, httpMethod, currentTaskItem.isIsCache(), busListener);
+            AbsCancelTask taskCancel = doCommonRequest(reqUrl, requestParam, httpMethod, currentTaskItem.isIsCache(), busListener);
             return taskCancel;
         }
         return null;
@@ -347,6 +355,21 @@ public class RequestManager {
      * @return
      */
     public AbsCancelTask doCommonRequest(String url, Map<String, Object> params, String method, boolean isCacheFirst, OnCommonBusListener commonBusListener) {
+        return doCommonRequest(url, BaseRequestParams.covertFormMap(params), method, isCacheFirst, commonBusListener);
+    }
+
+
+    /**
+     * 执行一个普通网络请求 返回请求任务回执
+     *
+     * @param url               请求地址
+     * @param params            参数对
+     * @param method            方法
+     * @param isCacheFirst      缓存优先
+     * @param commonBusListener 回执
+     * @return
+     */
+    public AbsCancelTask doCommonRequest(String url, BaseRequestParams params, String method, boolean isCacheFirst, OnCommonBusListener commonBusListener) {
         if (netEngine != null) {
             AbsCancelTask cancelTask = netEngine.doRequest(url, params, method, isCacheFirst, commonBusListener);
             return cancelTask;
@@ -366,6 +389,10 @@ public class RequestManager {
         doCommonRequest(url, params, "get", isCacheFirst, commonBusListener);
     }
 
+    public void doGet(String url, BaseRequestParams params, boolean isCacheFirst, OnCommonBusListener commonBusListener) {
+        doCommonRequest(url, params, "get", isCacheFirst, commonBusListener);
+    }
+
     /**
      * 执行简单的post方法
      *
@@ -375,29 +402,12 @@ public class RequestManager {
      * @param commonBusListener 回执
      */
     public void doPost(String url, Map<String, Object> params, boolean isCacheFirst, OnCommonBusListener commonBusListener) {
-
         doCommonRequest(url, params, "post", isCacheFirst, commonBusListener);
     }
 
-    @Deprecated
-    /***
-     * 判断返回信息token是否有效
-     *
-     * @param result
-     * @return
-     * @throws JSONException
-     */
-    public boolean isAccessTokenEffected(String result) throws JSONException {
-        JSONObject jsonObject = new JSONObject(result);
-        if (jsonObject.has("succeed")) {
-            String succeed = jsonObject.getString("succeed");
-            if (succeed.equals("-5")) {
-                return false;
-            }
-        }
-        return true;
+    public void doPost(String url, BaseRequestParams params, boolean isCacheFirst, OnCommonBusListener commonBusListener) {
+        doCommonRequest(url, params, "post", isCacheFirst, commonBusListener);
     }
-
 
     public void showCustomHeaderEditDialog(Context mContext) {
         final EditText et = new EditText(mContext);
