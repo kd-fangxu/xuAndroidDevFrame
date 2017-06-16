@@ -5,6 +5,10 @@ import android.util.AttributeSet;
 import android.widget.GridView;
 
 public class ExpandedGridView extends GridView {
+	public ExpandedGridView(Context context) {
+		super(context);
+	}
+
 	public ExpandedGridView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		// TODO Auto-generated constructor stub

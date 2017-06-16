@@ -39,10 +39,10 @@ public abstract class XuBaseFragment extends Fragment {
     //onCreateView是创建的时候调用，onViewCreated是在onCreateView后被触发的事件
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         initVariables();
         setLayout();
         loadData();
-        super.onViewCreated(view, savedInstanceState);
     }
 
     /**
