@@ -20,6 +20,20 @@ public class BaseRequestParams {
         itemList.add(item);
     }
 
+    public void setParam(String keyName, Object value) {
+        if (!hasKey(keyName)) {
+            addParam(keyName, value);
+        } else {
+            for (int i = 0; i < itemList.size(); i++) {
+                if (itemList.get(i).getKey().equals(keyName)) {
+                    itemList.get(i).setValue(value);
+                    return;
+                }
+            }
+        }
+
+    }
+
     public List<ParamsItem> getItemList() {
         return itemList;
     }
