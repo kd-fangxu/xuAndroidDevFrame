@@ -35,15 +35,15 @@ apt {
 }
 
 dependencies {
-    compile (group:'com.android.support',name:'appcompat-v7',version:"$rootProject.supportLibraryVersion")
+//    compile (group:'com.android.support',name:'appcompat-v7',version:"$rootProject.supportLibraryVersion")
     compile 'org.xutils:xutils:3.3.40'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.blankj:utilcode:1.3.7'
 
     compile 'com.alibaba:arouter-api:1.2.1'
     apt 'com.alibaba:arouter-compiler:1.1.2'
-
-    provided 'com.google.code.gson:gson:2.2.3'
+    compile 'com.google.code.gson:gson:2.7'
+//    provided 'com.google.code.gson:gson:2.2.3'
     compile files('libs/listviewanimations_lib-core_3.1.0.jar')
     compile 'com.nineoldandroids:library:2.4.0'
     compile "com.android.support:design:$rootProject.supportLibraryVersion"
