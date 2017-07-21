@@ -21,9 +21,6 @@ import com.xudev.iface.OnCommonBusListener;
 import com.xudev.utils.PatternCheckUtils;
 import com.xudev.utils.SPUtils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -418,6 +415,7 @@ public class RequestManager {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
+                        et.setText("http://");
                         String content = et.getText().toString();
                         if (content.length() > 0 && content.contains("http")) {
                             setAbsoluteHeaderStr(content);
@@ -503,5 +501,26 @@ public class RequestManager {
                 })
                 .show();
 
+    }
+
+    /**
+     * 获取请求前缀
+     * 自定义前缀 优先级 大于 环境配置
+     *
+     * @param key
+     * @return
+     */
+    public String getDomainStr(String key) {
+        if (AbsoluteHeaderStr != null && AbsoluteHeaderStr.length() > 0) {
+            return AbsoluteHeaderStr;
+        } else {
+            for (RequestEnvironment.VarsBean varsBean : reqBeanProvider.getRequestEnvironment().getVars()) {
+//                content = content + "\n" + "key: " + varsBean.getName() + "\n value:" + varsBean.getValue();
+                if (varsBean.getName() == key) {
+                    return varsBean.getValue();
+                }
+            }
+        }
+        return "defaule url is not setted or not find";
     }
 }
