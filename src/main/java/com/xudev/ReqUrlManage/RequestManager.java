@@ -516,7 +516,7 @@ public class RequestManager {
         } else {
             for (RequestEnvironment.VarsBean varsBean : reqBeanProvider.getRequestEnvironment().getVars()) {
 //                content = content + "\n" + "key: " + varsBean.getName() + "\n value:" + varsBean.getValue();
-                if (varsBean.getName() == key) {
+                if (varsBean.getName().equals(key)) {
                     return varsBean.getValue();
                 }
             }
