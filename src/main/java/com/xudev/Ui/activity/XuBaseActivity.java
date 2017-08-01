@@ -24,27 +24,27 @@ public abstract class XuBaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
-        super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        getActionBar().hide();
+        super.onCreate(savedInstanceState);
         mHandler = new Handler();
         initToast();
-//        setTheme(R.style.XuBaseActivityTheme);
         setLayout(savedInstanceState);
         loadData();
     }
 
     public abstract void setLayout(Bundle savedInstanceState);
-    public void loadData(){};
+
+    public void loadData() {
+    }
 
     public void showProgressDialog(String title, String msg) {
-        if(title!=null){
+        if (title != null) {
             dialog = new MaterialDialog.Builder(this)
                     .title(title)
                     .content(msg)
                     .progress(true, 0)
                     .show();
-        }else{
+        } else {
             dialog = new MaterialDialog.Builder(this)
                     .content(msg)
                     .progress(true, 0)
@@ -54,8 +54,8 @@ public abstract class XuBaseActivity extends AppCompatActivity {
 
     }
 
-    public void dismissDialog(){
-        if(dialog!=null){
+    public void dismissDialog() {
+        if (dialog != null) {
             dialog.dismiss();
         }
     }
@@ -68,7 +68,7 @@ public abstract class XuBaseActivity extends AppCompatActivity {
 
 
     public void showToast(String msg) {
-        if (temToast==null){
+        if (temToast == null) {
             temToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
         }
         temToast.setText(msg);
@@ -95,11 +95,11 @@ public abstract class XuBaseActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         CacheManager.instance().flush();
-        if(dialog!=null){
+        if (dialog != null) {
             dialog.dismiss();
             dialog.cancel();
         }
-        temToast=null;
+        temToast = null;
         super.onPause();
     }
 }
