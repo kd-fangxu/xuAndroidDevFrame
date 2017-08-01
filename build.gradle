@@ -34,7 +34,7 @@ allprojects {
 //        moduleName project.getName();
 //    }
 
-}
+//}
 
 dependencies {
 //    compile (group:'com.android.support',name:'appcompat-v7',version:"$rootProject.supportLibraryVersion")
