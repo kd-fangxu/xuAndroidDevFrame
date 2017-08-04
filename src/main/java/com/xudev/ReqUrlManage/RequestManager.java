@@ -408,6 +408,7 @@ public class RequestManager {
 
     public void showCustomHeaderEditDialog(Context mContext) {
         final EditText et = new EditText(mContext);
+        et.setText("http://");
         new MaterialDialog.Builder(mContext).title("设置请求头")
                 .customView(et, true)
                 .positiveText("确定")
@@ -415,7 +416,7 @@ public class RequestManager {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
-                        et.setText("http://");
+
                         String content = et.getText().toString();
                         if (content.length() > 0 && content.contains("http")) {
                             setAbsoluteHeaderStr(content);
