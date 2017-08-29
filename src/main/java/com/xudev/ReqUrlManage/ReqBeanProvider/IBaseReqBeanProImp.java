@@ -12,7 +12,7 @@ public abstract class IBaseReqBeanProImp implements IReqBeanProvider {
 
     IRequestConfigStrProvider strProvider;
     Context context;
-    RequestEnvironment requestEnvironment;
+    RequestEnvironment requestEnvironment;//环境配置
     /**
      * 设置绝对环境前缀
      */
