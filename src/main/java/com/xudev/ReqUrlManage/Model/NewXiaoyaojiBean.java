@@ -20,7 +20,16 @@ public class NewXiaoyaojiBean {
     private String id;
     private String lastUpdateTime;
     private String status;
-    private List<DocsEntity> docs;
+
+    public List<ChildrenEntity> getDocs() {
+        return docs;
+    }
+
+    public void setDocs(List<ChildrenEntity> docs) {
+        this.docs = docs;
+    }
+
+    private List<ChildrenEntity> docs;
 
     public String getExpires() {
         return expires;
@@ -110,16 +119,20 @@ public class NewXiaoyaojiBean {
         this.status = status;
     }
 
-    public List<DocsEntity> getDocs() {
-        return docs;
-    }
 
-    public void setDocs(List<DocsEntity> docs) {
-        this.docs = docs;
-    }
+    public static class ChildrenEntity {
+        /**
+         * children : []
+         * content : {"requestHeaders":[],"requestMethod":"POST","dataType":"FORM-DATA","requestArgs":[{"children":[],"name":"mobile","description":"手机号","require":"true","type":"string","testValue":""}],"description":"发送手机验证码","contentType":"JSON","url":"$host1$/m/sms/sendSmsCode","responseArgs":[{"children":[],"name":"succeed","description":"成功标志","require":"true","type":"string","testValue":""},{"children":[],"name":"msg","description":"返回消息","require":"true","type":"string","testValue":""},{"children":[],"name":"data","description":"{}","require":"true","type":"string","testValue":""}],"example":"","status":"有效"}
+         * id : 1xWbb3e15
+         * name : 手机验证码发送
+         * parentId : 1xUO1z7tM
+         * projectId : FOQnzXzFV
+         * sort : 3
+         * type : sys.http
+         */
 
-    public static class DocsEntity {
-
+        private String content;
         private String id;
         private String name;
         private String parentId;
@@ -136,6 +149,14 @@ public class NewXiaoyaojiBean {
         }
 
         private List<ChildrenEntity> children;
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
 
         public String getId() {
             return id;
@@ -185,94 +206,5 @@ public class NewXiaoyaojiBean {
             this.type = type;
         }
 
-
-
-        public static class ChildrenEntity {
-            /**
-             * children : []
-             * content : {"requestHeaders":[],"requestMethod":"POST","dataType":"FORM-DATA","requestArgs":[{"children":[],"name":"mobile","description":"手机号","require":"true","type":"string","testValue":""}],"description":"发送手机验证码","contentType":"JSON","url":"$host1$/m/sms/sendSmsCode","responseArgs":[{"children":[],"name":"succeed","description":"成功标志","require":"true","type":"string","testValue":""},{"children":[],"name":"msg","description":"返回消息","require":"true","type":"string","testValue":""},{"children":[],"name":"data","description":"{}","require":"true","type":"string","testValue":""}],"example":"","status":"有效"}
-             * id : 1xWbb3e15
-             * name : 手机验证码发送
-             * parentId : 1xUO1z7tM
-             * projectId : FOQnzXzFV
-             * sort : 3
-             * type : sys.http
-             */
-
-            private String content;
-            private String id;
-            private String name;
-            private String parentId;
-            private String projectId;
-            private int sort;
-            private String type;
-
-            public List<ChildrenEntity> getChildren() {
-                return children;
-            }
-
-            public void setChildren(List<ChildrenEntity> children) {
-                this.children = children;
-            }
-
-            private List<ChildrenEntity> children;
-
-            public String getContent() {
-                return content;
-            }
-
-            public void setContent(String content) {
-                this.content = content;
-            }
-
-            public String getId() {
-                return id;
-            }
-
-            public void setId(String id) {
-                this.id = id;
-            }
-
-            public String getName() {
-                return name;
-            }
-
-            public void setName(String name) {
-                this.name = name;
-            }
-
-            public String getParentId() {
-                return parentId;
-            }
-
-            public void setParentId(String parentId) {
-                this.parentId = parentId;
-            }
-
-            public String getProjectId() {
-                return projectId;
-            }
-
-            public void setProjectId(String projectId) {
-                this.projectId = projectId;
-            }
-
-            public int getSort() {
-                return sort;
-            }
-
-            public void setSort(int sort) {
-                this.sort = sort;
-            }
-
-            public String getType() {
-                return type;
-            }
-
-            public void setType(String type) {
-                this.type = type;
-            }
-
-        }
     }
 }
