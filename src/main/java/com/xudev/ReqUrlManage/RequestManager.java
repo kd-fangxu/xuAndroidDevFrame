@@ -2,11 +2,13 @@ package com.xudev.ReqUrlManage;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.xudev.ReqUrlManage.Engine.AbsCancelTask;
 import com.xudev.ReqUrlManage.Engine.INetEngine;
@@ -32,8 +34,8 @@ public class RequestManager {
 
     private static RequestManager manager;
     private Context context;
-    private static ReqBean reqBean;
-    private static INetEngine netEngine;
+    private ReqBean reqBean;
+    private INetEngine netEngine;
     private IRequestConfigStrProvider strProvider;
     public IBaseReqBeanProImp reqBeanProvider;
     private String AbsoluteHeaderStr;//请求地址标头  优先级大于 配置文件
@@ -59,13 +61,15 @@ public class RequestManager {
     public void RefreshReqBean() {
         AbsoluteHeaderStr = (String) SPUtils.get(context, "AbsoluteHeaderStr", "");
         if (AbsoluteHeaderStr != null && AbsoluteHeaderStr.length() > 0) {
-            reqBeanProvider.setAbsoluteHeaderStr(AbsoluteHeaderStr);
-            reqBean = reqBeanProvider.getReqBean();
+            LogUtils.e("绝对头部:" + AbsoluteHeaderStr);
+            manager.reqBeanProvider.setAbsoluteHeaderStr(AbsoluteHeaderStr);
+            manager.reqBean = manager.reqBeanProvider.getReqBean();
             return;
         }
 
         if (requestEnvironmentList != null && requestEnvironmentList.size() > 0) {
             String environName = (String) SPUtils.get(manager.context, "RequestEnvironment", "");//若存在配置
+            LogUtils.e("环境配置" + environName);
             if (environName.length() > 0) {
                 for (int i = 0; i < requestEnvironmentList.size(); i++) {
                     if (environName.equals(requestEnvironmentList.get(i).getName())) {
@@ -73,12 +77,12 @@ public class RequestManager {
                         break;
                     }
                 }
-                reqBeanProvider.setRequestEnvironment(requestEnvironmentList.get(EnvironmentSelectdeIndex));
-                reqBean = reqBeanProvider.getReqBean();
+                manager.reqBeanProvider.setRequestEnvironment(requestEnvironmentList.get(EnvironmentSelectdeIndex));
+                manager.reqBean = manager.reqBeanProvider.getReqBean();
             }
             return;
         }
-        reqBean = reqBeanProvider.getReqBean();
+        manager.reqBean = manager.reqBeanProvider.getReqBean();
     }
 
     /**
@@ -133,8 +137,9 @@ public class RequestManager {
                 e.printStackTrace();
             }
         }
+        manager.reqBeanProvider = provider;
         if (manager.reqBean == null) {
-            manager.reqBeanProvider = provider;
+
             manager.reqBean = provider.getReqBean();
         }
         manager.setNetEngine(new INetEngineDefaultImp());
@@ -325,7 +330,6 @@ public class RequestManager {
     }
 
     public AbsCancelTask doRequestInControll(String TaskId, BaseRequestParams requestParam, final OnCommonBusListener<String> busListener, boolean isCatcheFirst) throws Exception {
-
         String reqUrl = getRequestUrl(TaskId, busListener);
         if (null == reqUrl) {
             return null;
@@ -368,6 +372,7 @@ public class RequestManager {
      */
     public AbsCancelTask doCommonRequest(String url, BaseRequestParams params, String method, boolean isCacheFirst, OnCommonBusListener commonBusListener) {
         if (netEngine != null) {
+            LogUtils.e("url:" + url + "\n" + params.toString());
             AbsCancelTask cancelTask = netEngine.doRequest(url, params, method, isCacheFirst, commonBusListener);
             return cancelTask;
         }

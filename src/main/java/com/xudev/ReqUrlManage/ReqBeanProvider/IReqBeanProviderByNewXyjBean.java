@@ -53,10 +53,13 @@ public class IReqBeanProviderByNewXyjBean extends IBaseReqBeanProImp {
                         requestEnvironment = requestEnvironmentList.get(0);
                     }
                 }
+
+                taskItemList.clear();
                 for (NewXiaoyaojiBean.ChildrenEntity entity : newXiaoyaojiBean.getDocs()) {
                     travserseChirenEntity(entity);
                 }
                 //便利完成后  taskItemList已经填充
+
                 reqBean.setList(taskItemList);
 
             }
@@ -68,10 +71,11 @@ public class IReqBeanProviderByNewXyjBean extends IBaseReqBeanProImp {
         return reqBean;
     }
 
-    List<ReqBean.TaskItemBean> taskItemList = new ArrayList<>();//接口列表
 
+    List<ReqBean.TaskItemBean> taskItemList = new ArrayList<>();//接口列表
     private void travserseChirenEntity(NewXiaoyaojiBean.ChildrenEntity entity) {
-        LogUtils.e(entity.getType() + entity.getName());
+
+//        LogUtils.e(entity.getType() + entity.getName());
         if (entity.getType().contains("http")) {//过滤接口类型的数据
             if (entity.getContent() != null) {
 
@@ -81,6 +85,7 @@ public class IReqBeanProviderByNewXyjBean extends IBaseReqBeanProImp {
 //                    1:设置请求地址
                     String temUrl = requestItem.getUrl();
                     if (requestEnvironment != null) {
+//                        LogUtils.e("当前环境为============>" + requestEnvironment.getName());
                         if (requestEnvironment.getVars() != null) {
                             for (RequestEnvironment.VarsBean varBean : requestEnvironment.getVars()) {
                                 String tag = "$" + varBean.getName() + "$";
