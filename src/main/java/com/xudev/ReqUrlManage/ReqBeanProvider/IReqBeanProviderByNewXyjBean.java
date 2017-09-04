@@ -39,6 +39,7 @@ public class IReqBeanProviderByNewXyjBean extends IBaseReqBeanProImp {
 
     @Override
     public ReqBean getReqBean() {
+        LogUtils.e("reqBean","========》run");
 
         try {
             if (createNewXiaoyaojiBean() != null) {

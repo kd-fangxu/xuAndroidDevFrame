@@ -2,7 +2,6 @@ package com.xudev.ReqUrlManage;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -15,7 +14,6 @@ import com.xudev.ReqUrlManage.Engine.INetEngine;
 import com.xudev.ReqUrlManage.Engine.INetEngineDefaultImp;
 import com.xudev.ReqUrlManage.Model.RequestEnvironment;
 import com.xudev.ReqUrlManage.ReqBeanProvider.IBaseReqBeanProImp;
-import com.xudev.ReqUrlManage.ReqBeanProvider.IReqBeanProvider;
 import com.xudev.ReqUrlManage.ReqBeanProvider.IRequestConfigStrProvider;
 import com.xudev.ReqUrlManage.ReqBeanProvider.ReqBean;
 import com.xudev.ReqUrlManage.RequestParams.BaseRequestParams;
@@ -50,7 +48,6 @@ public class RequestManager {
         SPUtils.put(context, "AbsoluteHeaderStr", absoluteHeaderStr);
         SPUtils.remove(context, "RequestEnvironment");
         //清空保存条件
-        RefreshReqBean();
     }
 
 
@@ -58,7 +55,13 @@ public class RequestManager {
         return requestEnvironmentList;
     }
 
-    public void RefreshReqBean() {
+    /**
+     * 系统调用之前需要先reload
+     */
+    public void reloadReqBean() {
+        if (manager.netEngine == null) {
+            manager.netEngine = new INetEngineDefaultImp();
+        }
         AbsoluteHeaderStr = (String) SPUtils.get(context, "AbsoluteHeaderStr", "");
         if (AbsoluteHeaderStr != null && AbsoluteHeaderStr.length() > 0) {
             LogUtils.e("绝对头部:" + AbsoluteHeaderStr);
@@ -92,7 +95,7 @@ public class RequestManager {
      */
     public void setRequestEnvironmentList(List<RequestEnvironment> requestEnvironmentList) {
         this.requestEnvironmentList = requestEnvironmentList;
-        RefreshReqBean();
+//        reloadReqBean();
     }
 
     private List<RequestEnvironment> requestEnvironmentList;//请求环境列表
@@ -138,24 +141,10 @@ public class RequestManager {
             }
         }
         manager.reqBeanProvider = provider;
-        if (manager.reqBean == null) {
-
-            manager.reqBean = provider.getReqBean();
-        }
-        manager.setNetEngine(new INetEngineDefaultImp());
         return manager;
 
     }
 
-
-    /**
-     * 获取请求参数配置对象
-     *
-     * @param iReqBeanProvider
-     */
-    public void getReqBean(IReqBeanProvider iReqBeanProvider) {
-        reqBean = iReqBeanProvider.getReqBean();
-    }
 
     public void setNetEngine(INetEngine netEngine) {
         this.netEngine = netEngine;
@@ -371,6 +360,9 @@ public class RequestManager {
      * @return
      */
     public AbsCancelTask doCommonRequest(String url, BaseRequestParams params, String method, boolean isCacheFirst, OnCommonBusListener commonBusListener) {
+        if (manager.reqBean == null) {
+            reloadReqBean();
+        }
         if (netEngine != null) {
             LogUtils.e("url:" + url + "\n" + params.toString());
             AbsCancelTask cancelTask = netEngine.doRequest(url, params, method, isCacheFirst, commonBusListener);
