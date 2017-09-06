@@ -40,6 +40,7 @@ public class RequestManager {
 
     /**
      * 设置绝对头部地址  优先级 大于 环境配置
+     * 设置之后调用reload方法生效
      *
      * @param absoluteHeaderStr
      */
@@ -212,6 +213,9 @@ public class RequestManager {
      * @return
      */
     public String getRequestUrl(String taskId, OnCommonBusListener<String> busListener) throws Exception {
+        if (manager.reqBean == null) {
+            reloadReqBean();
+        }
         if (reqBean == null) {
             if (busListener != null) {
                 busListener.onFailed("无配置文件或文件解析出错");
