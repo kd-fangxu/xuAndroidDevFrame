@@ -421,6 +421,7 @@ public class RequestManager {
                         String content = et.getText().toString();
                         if (content.length() > 0 && content.contains("http")) {
                             setAbsoluteHeaderStr(content);
+                            reloadReqBean();
                             ToastUtils.showLongToast("强制请求头" + content + "已配置");
                         }
                     }

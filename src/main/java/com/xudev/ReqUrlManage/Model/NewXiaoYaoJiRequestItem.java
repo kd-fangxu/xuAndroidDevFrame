@@ -28,10 +28,19 @@ public class NewXiaoYaoJiRequestItem {
     private String url;
     private String example;
     private String status;
+    private GlobalBean global;
     private List<?> requestHeaders;
     private List<RequestArgsEntity> requestArgs;
     private List<ResponseArgsEntity> responseArgs;
 
+
+    public GlobalBean getGlobal() {
+        return global;
+    }
+
+    public void setGlobal(GlobalBean global) {
+        this.global = global;
+    }
     public String getRequestMethod() {
         return requestMethod;
     }
@@ -110,6 +119,62 @@ public class NewXiaoYaoJiRequestItem {
 
     public void setResponseArgs(List<ResponseArgsEntity> responseArgs) {
         this.responseArgs = responseArgs;
+    }
+
+    public static class GlobalBean {
+        /**
+         * environment : [{"name":"test","t":1504074915562,"vars":[{"name":"host","value":"1"}]}]
+         * http : {"requestHeaders":[{"require":"true","children":[],"name":"t","id":"oqek6d"}],"responseHeaders":[{"require":"true","children":[],"name":"tttt","id":"gigwoq"}],"requestArgs":[{"require":"true","children":[],"type":"string","name":"type","id":"zypirb"}],"responseArgs":[]}
+         * id : TjuoAvvvB
+         * projectId : Tjuo46VMp
+         * status : [{"name":"有效","value":"ENABLE","t":1493901719144},{"name":"废弃","value":"DEPRECATED","t":1493901728060}]
+         */
+
+        private String environment;
+        private String http;
+        private String id;
+        private String projectId;
+        private String status;
+
+        public String getEnvironment() {
+            return environment;
+        }
+
+        public void setEnvironment(String environment) {
+            this.environment = environment;
+        }
+
+        public String getHttp() {
+            return http;
+        }
+
+        public void setHttp(String http) {
+            this.http = http;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getProjectId() {
+            return projectId;
+        }
+
+        public void setProjectId(String projectId) {
+            this.projectId = projectId;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
     }
 
     public static class RequestArgsEntity {
