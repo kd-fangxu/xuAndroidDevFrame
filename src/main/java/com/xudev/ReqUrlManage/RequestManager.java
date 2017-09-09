@@ -76,6 +76,10 @@ public class RequestManager {
 
     }
 
+    /**
+     * 获取请求参数配置对象
+     * @param iReqBeanProvider
+     */
     public void getReqBean(IReqBeanProvider iReqBeanProvider) {
         reqBean = iReqBeanProvider.getReqBean();
     }
@@ -86,6 +90,13 @@ public class RequestManager {
 
     ReqBean.TaskItemBean currentTaskItem = null;
 
+    /**
+     * 根据taskid 获取对应 url
+     *
+     * @param taskId
+     * @param busListener
+     * @return
+     */
     public String getRequestUrl(String taskId, OnCommonBusListener<String> busListener) {
         currentTaskItem = null;
         if (reqBean == null) {
@@ -142,51 +153,40 @@ public class RequestManager {
 
 
     /**
-     * 提交一个请求 默认网络优先
+     * 执行一个配置请求 默认网络优先
      *
-     * @param TaskId
-     * @param mapParam
-     * @param busListener
+     * @param TaskId      任务id
+     * @param mapParam    参数对
+     * @param busListener 回执
      * @throws Exception
      */
     public void doRequest(String TaskId, Map<String, Object> mapParam, OnCommonBusListener<String> busListener) throws Exception {
         this.doRequest(TaskId, mapParam, busListener, false);
     }
 
+    /**
+     * 执行一个配置请求
+     *
+     * @param TaskId        任务id
+     * @param mapParam      参数对
+     * @param busListener   回执
+     * @param isCatcheFirst 是否缓存优先
+     * @throws Exception
+     */
     public void doRequest(String TaskId, Map<String, Object> mapParam, final OnCommonBusListener<String> busListener, boolean isCatcheFirst) throws Exception {
-
-
-        String reqUrl = getRequestUrl(TaskId, busListener);
-        if (null == reqUrl) {
-            return;
-        }
-
-        if (currentTaskItem.getParams() != null) {
-            for (ReqBean.TaskItemBean.ParamsBean param : currentTaskItem.getParams()) {//注意这种实现 是严格遵守配置文档的参数进行 param设置的 如果mapParam 存在配置中不存在的key值将会被忽略
-                if (param.getKey() == null) {
-                    continue;
-                }
-                if (param.getKey().equals("")) {
-                    continue;
-                }
-                if (param.isIsNessary() && !mapParam.containsKey(param.getKey())) {
-                    busListener.onFailed("缺少key值为" + param.getKey() + "的必要参数");
-                    return;
-                }
-                if (!mapParam.containsKey(param.getKey())) {
-                    continue;
-                }
-            }
-
-            String httpMethod = "get";
-            if (currentTaskItem.getRequestMethod() != null && !currentTaskItem.getRequestMethod().equals("")) {
-                httpMethod = currentTaskItem.getRequestMethod().toLowerCase();
-            }
-            doCommonRequest(reqUrl, mapParam, httpMethod, currentTaskItem.isIsCache(), busListener);
-
-        }
+        doRequestInControll(TaskId, mapParam, busListener, isCatcheFirst);
     }
 
+    /**
+     * 执行配置配置请求，返回请求任务控制句柄
+     *
+     * @param TaskId        任务id
+     * @param mapParam      参数对
+     * @param busListener   回执
+     * @param isCatcheFirst 是否缓存优先
+     * @return
+     * @throws Exception
+     */
     public AbsCancelTask doRequestInControll(String TaskId, Map<String, Object> mapParam, final OnCommonBusListener<String> busListener, boolean isCatcheFirst) throws Exception {
 
         String reqUrl = getRequestUrl(TaskId, busListener);
@@ -221,7 +221,16 @@ public class RequestManager {
         return null;
     }
 
-
+    /**
+     * 执行一个普通网络请求 返回请求任务回执
+     *
+     * @param url               请求地址
+     * @param params            参数对
+     * @param method            方法
+     * @param isCacheFirst      缓存优先
+     * @param commonBusListener 回执
+     * @return
+     */
     public AbsCancelTask doCommonRequest(String url, Map<String, Object> params, String method, boolean isCacheFirst, OnCommonBusListener commonBusListener) {
         if (netEngine != null) {
             AbsCancelTask cancelTask = netEngine.doRequest(url, params, method, isCacheFirst, commonBusListener);
@@ -230,16 +239,32 @@ public class RequestManager {
         return null;
     }
 
+    /**
+     * 执行简单的get方法
+     *
+     * @param url               请求地址
+     * @param params            参数对
+     * @param isCacheFirst      缓存优先
+     * @param commonBusListener 回执
+     */
     public void doGet(String url, Map<String, Object> params, boolean isCacheFirst, OnCommonBusListener commonBusListener) {
-
         doCommonRequest(url, params, "get", isCacheFirst, commonBusListener);
     }
 
+    /**
+     * 执行简单的post方法
+     *
+     * @param url               请求地址
+     * @param params            参数对
+     * @param isCacheFirst      缓存优先
+     * @param commonBusListener 回执
+     */
     public void doPost(String url, Map<String, Object> params, boolean isCacheFirst, OnCommonBusListener commonBusListener) {
 
         doCommonRequest(url, params, "post", isCacheFirst, commonBusListener);
     }
 
+    @Deprecated
     /***
      * 判断返回信息token是否有效
      *
