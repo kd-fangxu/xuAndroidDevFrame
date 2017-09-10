@@ -405,7 +405,7 @@ public class PatternCheckUtils {
 	 *            匹配模式
 	 * @return boolean
 	 */
-	private static boolean Regular(String str, String pattern) {
+	public static boolean Regular(String str, String pattern) {
 		if (null == str || str.trim().length() <= 0)
 			return false;
 		Pattern p = Pattern.compile(pattern);
