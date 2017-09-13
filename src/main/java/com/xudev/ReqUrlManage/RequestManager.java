@@ -83,8 +83,9 @@ public class RequestManager {
                 }
                 manager.reqBeanProvider.setRequestEnvironment(requestEnvironmentList.get(EnvironmentSelectdeIndex));
                 manager.reqBean = manager.reqBeanProvider.getReqBean();
+                return;
             }
-            return;
+
         }
         manager.reqBean = manager.reqBeanProvider.getReqBean();
     }
