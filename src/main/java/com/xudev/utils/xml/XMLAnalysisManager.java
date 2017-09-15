@@ -120,7 +120,7 @@ public class XMLAnalysisManager {
 	 *             XML文件找不到或标签名为空时
 	 */
 	public static String getNodeValue(InputStream is, String tagName) throws Exception {
-		if (isEmpty(tagName)) {
+		if (!isEmpty(tagName)) {
 			throw new Exception("节点名称为空");
 		}
 
