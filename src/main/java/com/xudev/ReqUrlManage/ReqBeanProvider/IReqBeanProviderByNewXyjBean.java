@@ -8,8 +8,6 @@ import com.google.gson.reflect.TypeToken;
 import com.xudev.ReqUrlManage.Model.NewXiaoYaoJiRequestItem;
 import com.xudev.ReqUrlManage.Model.NewXiaoyaojiBean;
 import com.xudev.ReqUrlManage.Model.RequestEnvironment;
-import com.xudev.ReqUrlManage.Model.XiaoYaojiApiBean;
-import com.xudev.utils.GsonFormatUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +46,7 @@ public class IReqBeanProviderByNewXyjBean extends IBaseReqBeanProImp {
                 reqBean.setMatchAppCode("");
                 reqBean.setName(newXiaoyaojiBean.getName());
                 if (requestEnvironment == null) {//环境未设置 获取获取配置的第一个环境进行配置
-                    List<RequestEnvironment> requestEnvironmentList = new Gson().fromJson(newXiaoyaojiBean.getEnvironments(), new TypeToken<List<RequestEnvironment>>() {
+                    List<RequestEnvironment> requestEnvironmentList = new Gson().fromJson(newXiaoyaojiBean.getGlobal().getEnvironment(), new TypeToken<List<RequestEnvironment>>() {
                     }.getType());
                     if (requestEnvironmentList != null && requestEnvironmentList.size() > 0) {
                         requestEnvironment = requestEnvironmentList.get(0);
