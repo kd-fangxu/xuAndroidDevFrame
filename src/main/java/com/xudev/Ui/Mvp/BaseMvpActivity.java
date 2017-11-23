@@ -24,6 +24,9 @@ public abstract class BaseMvpActivity<T extends BasePresenter,V extends IBaseUiA
         super.onDestroy();
     }
 
+    /**
+     * 初始化业务类
+     */
     public abstract void initPresenter();
 
     @Override

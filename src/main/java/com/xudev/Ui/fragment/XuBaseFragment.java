@@ -1,6 +1,7 @@
 package com.xudev.Ui.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -39,29 +41,36 @@ public abstract class XuBaseFragment extends Fragment {
     //onCreateView是创建的时候调用，onViewCreated是在onCreateView后被触发的事件
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         initVariables();
         setLayout();
         loadData();
-        super.onViewCreated(view, savedInstanceState);
     }
 
     /**
      * 参数初始化
      */
     public void initVariables() {
-    };
+    }
+
+    ;
 
     /**
      * view 初始化
      */
     public void setLayout() {
-    };
+
+    }
+
+    ;
 
     /**
      * 加载数据
      */
     public void loadData() {
-    };
+    }
+
+    ;
 
     @Deprecated
     @SuppressLint("ShowToast")
