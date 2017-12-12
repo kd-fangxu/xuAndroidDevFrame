@@ -7,8 +7,8 @@ import android.widget.EditText;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.ToastUtils;
+import com.blankj.utilcode.utils.ToastUtils;
+import com.blankj.utilcode.utils.LogUtils;
 import com.xudev.ReqUrlManage.Engine.AbsCancelTask;
 import com.xudev.ReqUrlManage.Engine.INetEngine;
 import com.xudev.ReqUrlManage.Engine.INetEngineDefaultImp;
@@ -37,6 +37,7 @@ public class RequestManager {
     private IRequestConfigStrProvider strProvider;
     public IBaseReqBeanProImp reqBeanProvider;
     private String AbsoluteHeaderStr;//请求地址标头  优先级大于 配置文件
+//LogUtils
 
     /**
      * 设置绝对头部地址  优先级 大于 环境配置

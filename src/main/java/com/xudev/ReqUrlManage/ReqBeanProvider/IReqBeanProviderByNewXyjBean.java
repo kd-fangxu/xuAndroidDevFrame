@@ -2,7 +2,8 @@ package com.xudev.ReqUrlManage.ReqBeanProvider;
 
 import android.content.Context;
 
-import com.blankj.utilcode.util.LogUtils;
+
+import com.blankj.utilcode.utils.LogUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xudev.ReqUrlManage.Model.NewXiaoYaoJiRequestItem;
