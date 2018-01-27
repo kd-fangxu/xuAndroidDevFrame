@@ -1,5 +1,6 @@
 package com.xudev.ReqUrlManage.Engine;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.xudev.ReqUrlManage.RequestParams.BaseRequestParams;
 import com.xudev.ReqUrlManage.RequestParams.ParamsItem;
 import com.xudev.iface.OnCommonBusListener;
@@ -11,8 +12,6 @@ import org.xutils.http.RequestParams;
 import org.xutils.x;
 
 import java.io.File;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Created by developer on 2016/12/21.
@@ -45,6 +44,7 @@ public class INetEngineDefaultImp implements INetEngine {
             for (ParamsItem items : params.getItemList()) {
                 if (items.getValue() instanceof File) {
                     reqParam.setMultipart(true);
+                    httpMethodmethod = HttpMethod.POST;//如果是上传类型的请求 无论配置是get post或是其他 统一用post提交
                 }
                 reqParam.addParameter(items.getKey(), items.getValue());
             }
@@ -54,6 +54,7 @@ public class INetEngineDefaultImp implements INetEngine {
 //                reqParam.addParameter((String) entry.getKey(), entry.getValue());
 //            }
         }
+        LogUtils.d("log_xiaoquaner", "request===>" + url);
         AbsCancelTask<Callback.Cancelable> cancelTask = new AbsCancelTask<Callback.Cancelable>() {
             @Override
             public void cancelTask() {
