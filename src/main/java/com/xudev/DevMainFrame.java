@@ -3,8 +3,6 @@ package com.xudev;
 import android.app.Application;
 import android.content.Context;
 
-import com.xudev.utils.cacheManager.CacheManager;
-
 import org.xutils.x;
 
 /**
@@ -19,6 +17,5 @@ public class DevMainFrame {
         // 开启debug会影响性能
         x.Ext.setDebug(false);
         x.Ext.init((Application) context);
-        CacheManager.init(context);
     }
 }
