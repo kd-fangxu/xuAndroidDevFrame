@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xudev.net.bean.RequestEnvironment;
 import com.xudev.net.bean.XiaoYaojiApiBean;
-import com.xudev.utils.PatternCheckUtils;
+import com.xudev.utils.string.PatternCheckUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;

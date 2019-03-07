@@ -15,7 +15,7 @@ public abstract class AbsCancelTask<T> {
         this.taskContext = taskContext;
     }
 
-    public abstract void cancelTask() ;
+    public abstract void cancelTask();
 
 
 }

@@ -5,7 +5,9 @@ package com.xudev.net.engine;
  */
 
 public interface ICancelTask {
-    public  Object taskContext = null;
-    void  cacelTask();
+
+    Object taskContext = null;
+
+    void cacelTask();
 
 }

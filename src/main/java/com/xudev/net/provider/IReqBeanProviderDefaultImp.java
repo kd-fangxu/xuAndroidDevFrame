@@ -3,7 +3,7 @@ package com.xudev.net.provider;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.xudev.utils.JsonValidator;
+import com.xudev.utils.net.json.JsonValidator;
 
 import java.io.IOException;
 
