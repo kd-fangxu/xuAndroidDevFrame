@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.xudev.utils.cacheManager.CacheManager;
+//import com.xudev.utils.cacheManager.CacheManager;
 
 /**
  * Created by developer on 16/8/2.
@@ -111,7 +111,7 @@ public abstract class XuBaseFragment extends Fragment {
 
     @Override
     public void onDetach() {
-        CacheManager.instance().flush();
+//        CacheManager.instance().flush();
         if (dialog != null) {
             dialog.dismiss();
             dialog.cancel();

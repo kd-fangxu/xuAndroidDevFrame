@@ -12,7 +12,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.xudev.utils.cacheManager.CacheManager;
 
 public abstract class XuBaseActivity extends AppCompatActivity {
 
@@ -95,7 +94,7 @@ public abstract class XuBaseActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        CacheManager.instance().flush();
+//        CacheManager.instance().flush();
         if (dialog != null) {
             dialog.dismiss();
             dialog.cancel();
