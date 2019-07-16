@@ -17,5 +17,6 @@ public class KdDevFrame {
         // 开启debug会影响性能
         x.Ext.setDebug(false);
         x.Ext.init((Application) context);
+
     }
 }

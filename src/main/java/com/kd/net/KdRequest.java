@@ -187,7 +187,8 @@ public class KdRequest {
                 }
             }
             if (busListener != null && msg.toString().length() > 0) {
-                busListener.onFailed(msg.toString());
+
+                busListener.onFailed(new Exception(msg.toString()));
                 return true;
             }
 
@@ -224,7 +225,7 @@ public class KdRequest {
         }
         if (reqBean == null) {
             if (busListener != null) {
-                busListener.onFailed("无配置文件或文件解析出错");
+                busListener.onFailed(new Exception("无配置文件或文件解析出错"));
             } else {
                 throw new Exception("无配置文件或文件解析出错");
             }
@@ -235,7 +236,7 @@ public class KdRequest {
         if (null == currentTaskItem) {
             String msg = "不存在taskId:" + taskId + "映射的taskItem 请检查配置文件";
             if (busListener != null) {
-                busListener.onFailed(msg);
+                busListener.onFailed(new Exception(msg));
             } else {
                 throw new Exception(msg);
             }
@@ -244,7 +245,7 @@ public class KdRequest {
         if (currentTaskItem.getUrl() == null) {
             String msg = "taskid: " + taskId + " 映射的taskItem Url 为 null";
             if (busListener != null) {
-                busListener.onFailed(msg);
+                busListener.onFailed(new Exception(msg));
             } else {
                 throw new Exception(msg);
             }
@@ -259,7 +260,7 @@ public class KdRequest {
             if (reqBean.getDomainName() == null) {
                 String msg = "DomainName为null";
                 if (busListener != null) {
-                    busListener.onFailed(msg);
+                    busListener.onFailed(new Exception(msg));
                 } else {
                     throw new Exception(msg);
                 }
@@ -269,7 +270,7 @@ public class KdRequest {
             if (!PatternCheckUtils.isUrl(reqUrl)) {
                 String msg = "请求地址不合法，请检查domainName和taskItem URL 组合规则 domainName+taskItemUrl";
                 if (busListener != null) {
-                    busListener.onFailed(msg);
+                    busListener.onFailed(new Exception(msg));
                 } else {
                     throw new Exception(msg);
                 }
@@ -368,11 +369,13 @@ public class KdRequest {
      * @return
      */
     public AbsCancelTask doCommonRequest(String url, BaseRequestParams params, String method, boolean isCacheFirst, KdCallBack commonBusListener) {
-        if (manager.reqBean == null) {
-            reloadReqBean();
+//        if (manager.reqBean == null) {
+//            reloadReqBean();
+//        }
+        if (manager.netEngine == null) {
+            manager.netEngine = new NetEngineDefaultImpl();
         }
         if (netEngine != null) {
-            LogUtils.e("url:" + url + "\n" + params.toString());
             AbsCancelTask cancelTask = netEngine.doRequest(url, params, method, isCacheFirst, commonBusListener);
             return cancelTask;
         }
@@ -426,7 +429,7 @@ public class KdRequest {
                         if (content.length() > 0 && content.contains("http")) {
                             setAbsoluteHeaderStr(content);
                             reloadReqBean();
-                            ToastUtils.showLongToast("强制请求头" + content + "已配置");
+                            ToastUtils.showLong("强制请求头" + content + "已配置");
                         }
                     }
                 })
@@ -484,7 +487,7 @@ public class KdRequest {
                             reqBeanProvider.setAbsoluteHeaderStr(null);//绝对头部制空
                             SPUtils.remove(mContext, "absoluteHeaderStr");
                             reqBean = reqBeanProvider.getReqBean();
-                            ToastUtils.showLongToast(rq.getName() + "环境已配置");
+                            ToastUtils.showLong(rq.getName() + "环境已配置");
                             SPUtils.put(mContext, "RequestEnvironment", rq.getName());
 
                         }

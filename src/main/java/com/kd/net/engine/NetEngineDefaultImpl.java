@@ -1,6 +1,7 @@
 package com.kd.net.engine;
 
-import com.blankj.utilcode.util.LogUtils;
+import android.util.Log;
+
 import com.kd.callback.KdCallBack;
 import com.kd.net.param.BaseRequestParams;
 import com.kd.net.param.ParamsItem;
@@ -30,6 +31,7 @@ public class NetEngineDefaultImpl implements INetEngine {
     @Override
     public AbsCancelTask doRequest(String url, BaseRequestParams params, String method, final boolean isCacheFirst, final KdCallBack<String> commonBusListener) {
         final RequestParams reqParam = new RequestParams(url);
+        Log.e("kdRequest:doRequest==>", url);
         HttpMethod httpMethodmethod = HttpMethod.GET;
         if (method.equals("get")) {
             httpMethodmethod = HttpMethod.GET;
@@ -38,6 +40,9 @@ public class NetEngineDefaultImpl implements INetEngine {
         } else {
             httpMethodmethod = HttpMethod.GET;
         }
+        /**
+         * 设置参数
+         */
         if (params != null) {
             for (ParamsItem items : params.getItemList()) {
                 if (items.getValue() instanceof File) {
@@ -46,13 +51,11 @@ public class NetEngineDefaultImpl implements INetEngine {
                 }
                 reqParam.addParameter(items.getKey(), items.getValue());
             }
-//            Iterator entries = params.entrySet().iterator();
-//            while (entries.hasNext()) {
-//                Map.Entry entry = (Map.Entry) entries.next();
-//                reqParam.addParameter((String) entry.getKey(), entry.getValue());
-//            }
+//      * 设置header
+            for (ParamsItem paramsItem : params.getHeaderParamList()) {
+                reqParam.addHeader(paramsItem.getKey(), (String) paramsItem.getValue());
+            }
         }
-        LogUtils.d("log_xiaoquaner", "request===>" + url);
         AbsCancelTask<Callback.Cancelable> cancelTask = new AbsCancelTask<Callback.Cancelable>() {
             @Override
             public void cancelTask() {
@@ -82,7 +85,8 @@ public class NetEngineDefaultImpl implements INetEngine {
                     @Override
                     public void onError(Throwable ex, boolean isOnCallback) {
                         if (commonBusListener != null) {
-                            commonBusListener.onFailed("网络请求失败或回调方法中出现异常");
+                            Log.e("kdRequest:onError==>", ex.toString());
+                            commonBusListener.onFailed(ex);
                         }
 
                     }
