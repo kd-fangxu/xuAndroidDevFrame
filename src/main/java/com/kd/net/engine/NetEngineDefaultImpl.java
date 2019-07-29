@@ -32,13 +32,30 @@ public class NetEngineDefaultImpl implements INetEngine {
     public AbsCancelTask doRequest(String url, BaseRequestParams params, String method, final boolean isCacheFirst, final KdCallBack<String> commonBusListener) {
         final RequestParams reqParam = new RequestParams(url);
         Log.e("kdRequest:doRequest==>", url);
+        method = method.toLowerCase();
         HttpMethod httpMethodmethod = HttpMethod.GET;
         if (method.equals("get")) {
             httpMethodmethod = HttpMethod.GET;
         } else if (method.equals("post")) {
             httpMethodmethod = HttpMethod.POST;
-        } else {
-            httpMethodmethod = HttpMethod.GET;
+        } else if (method.equals("put")) {
+            httpMethodmethod = HttpMethod.PUT;
+        } else if (method.equals("head")) {
+            httpMethodmethod = HttpMethod.HEAD;
+        } else if (method.equals("patch")) {
+            httpMethodmethod = HttpMethod.PATCH;
+        } else if (method.equals("move")) {
+            httpMethodmethod = HttpMethod.MOVE;
+        } else if (method.equals("copy")) {
+            httpMethodmethod = HttpMethod.COPY;
+        } else if (method.equals("delete")) {
+            httpMethodmethod = HttpMethod.DELETE;
+        } else if (method.equals("options")) {
+            httpMethodmethod = HttpMethod.OPTIONS;
+        } else if (method.equals("trace")) {
+            httpMethodmethod = HttpMethod.TRACE;
+        } else if (method.equals("connect")) {
+            httpMethodmethod = HttpMethod.CONNECT;
         }
         /**
          * 设置参数
