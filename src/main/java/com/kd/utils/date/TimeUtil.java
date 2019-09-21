@@ -79,6 +79,7 @@ public class TimeUtil {
 
     /**
      * 转换时间显示格式
+     *
      * @param fromStr
      * @param fromFormat
      * @param toFormat
@@ -194,11 +195,12 @@ public class TimeUtil {
 
     /**
      * 获取月单位偏移量
+     *
      * @param date
      * @param offset
      * @return
      */
-    public static Date getDateMonthOffset(Date date,int offset){
+    public static Date getDateMonthOffset(Date date, int offset) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.add(Calendar.MONTH, offset);
@@ -206,32 +208,54 @@ public class TimeUtil {
     }
 
     /**
+     * 获取日 偏移date
+     *
+     * @param date
+     * @param offsetDay
+     * @return
+     */
+    public static Date getDateOffset(Date date, int offsetDay) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.DATE, offsetDay);
+        return cal.getTime();
+    }
+
+    /**
      * 获取当前月份第一天
+     *
      * @param date
      * @return
      */
-    public static  Date getFirstDayInMonth(Date date){
+    public static Date getFirstDayInMonth(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        cal.set(Calendar.DAY_OF_MONTH,1);//设置为1号,当前日期既为本月第一天
-        return  cal.getTime();
+        cal.set(Calendar.DAY_OF_MONTH, 1);//设置为1号,当前日期既为本月第一天
+        return cal.getTime();
     }
 
     /**
      * 获取当前月份最后一天
+     *
      * @param date
      * @return
      */
-    public static  Date getLastDayInMonth(Date date){
+    public static Date getLastDayInMonth(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        cal.add(Calendar.MONTH,+1);
-        cal.set(Calendar.DAY_OF_MONTH,1);//设置为1号,当前日期既为本月第一天
-        cal.add(Calendar.DAY_OF_MONTH,-1);
-        return  cal.getTime();
+        cal.add(Calendar.MONTH, +1);
+        cal.set(Calendar.DAY_OF_MONTH, 1);//设置为1号,当前日期既为本月第一天
+        cal.add(Calendar.DAY_OF_MONTH, -1);
+        return cal.getTime();
     }
 
-    public static String secToTime(int time){
+    /**
+     * 秒转 时分秒
+     *
+     * @param time
+     * @return
+     */
+    public static String secToTime(int time) {
 //        int time=Integer.valueOf(str);
         String timeStr = null;
         int hour = 0;
@@ -256,6 +280,7 @@ public class TimeUtil {
         return timeStr;
 
     }
+
     public static String unitFormat(int i) {
         String retStr = null;
         if (i >= 0 && i < 10)
@@ -264,4 +289,6 @@ public class TimeUtil {
             retStr = "" + i;
         return retStr;
     }
+
+
 }

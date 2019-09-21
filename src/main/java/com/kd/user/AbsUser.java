@@ -6,7 +6,7 @@ import com.blankj.utilcode.util.SPUtils;
 public class AbsUser {
     protected static final String USER = "currentuser";
 
-    public void clearUser() {
+    public static void clearUser() {
         SPUtils.getInstance().remove(USER);
     }
 

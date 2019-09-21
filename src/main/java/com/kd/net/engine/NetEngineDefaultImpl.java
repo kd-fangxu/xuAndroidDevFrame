@@ -9,6 +9,8 @@ import com.kd.net.param.ParamsItem;
 import org.xutils.common.Callback;
 import org.xutils.http.HttpMethod;
 import org.xutils.http.RequestParams;
+import org.xutils.http.annotation.HttpResponse;
+import org.xutils.http.app.ResponseParser;
 import org.xutils.x;
 
 import java.io.File;
@@ -79,6 +81,7 @@ public class NetEngineDefaultImpl implements INetEngine {
                 taskContext.cancel();//根据不同的引擎的任务取消方法  实现不同
             }
         };
+
         cancelTask.setTaskContext(x.http().request(httpMethodmethod, reqParam, new Callback.CacheCallback<String>() {
 
                     @Override
