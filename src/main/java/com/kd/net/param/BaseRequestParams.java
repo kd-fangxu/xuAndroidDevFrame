@@ -52,16 +52,14 @@ public abstract class BaseRequestParams {
     }
 
     public void setHeaderParam(String keyName, Object value) {
-        if (!hasKey(keyName)) {
-            addParam(keyName, value);
-        } else {
-            for (int i = 0; i < itemList.size(); i++) {
-                if (itemList.get(i).getKey().equals(keyName)) {
-                    itemList.get(i).setValue(value);
-                    return;
-                }
+
+        for (int i = 0; i < headerParamList.size(); i++) {
+            if (headerParamList.get(i).getKey().equals(keyName)) {
+                headerParamList.remove(i);
+                i = i - 1;
             }
         }
+        addHeaderParam(keyName, value);
     }
 
     public List<ParamsItem> getItemList() {

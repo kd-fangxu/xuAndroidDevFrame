@@ -18,6 +18,7 @@ public class TimeUtil {
     public final static String FORMAT_MONTH_DAY_TIME = "MM月dd日  hh:mm";
 
     public final static String FORMAT_DATE_TIME = "yyyy-MM-dd HH:mm";
+    public final static String FORMAT_DATE_TIME_2 = "yyyy-MM-dd HH:mm:ss";
     public final static String FORMAT_DATE1_TIME = "yyyy/MM/dd HH:mm";
     public final static String FORMAT_DATE_TIME_SECOND = "yyyy/MM/dd HH:mm:ss";
 
@@ -290,5 +291,33 @@ public class TimeUtil {
         return retStr;
     }
 
+    /**
+     * 获取哪一年
+     *
+     * @return
+     */
+    public static int getCurrentYear() {
+        String yyyy = getCurrentTime("yyyy");
+        return Integer.valueOf(yyyy).intValue();
+    }
 
+    /**
+     * 获取哪一月
+     *
+     * @return
+     */
+    public static int getCurrentMonth() {
+        String yyyy = getCurrentTime("MM");
+        return Integer.valueOf(yyyy).intValue();
+    }
+
+    /**
+     * 获取哪一日
+     *
+     * @return
+     */
+    public static int getCurrentDay() {
+        String yyyy = getCurrentTime("dd");
+        return Integer.valueOf(yyyy).intValue();
+    }
 }
