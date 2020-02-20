@@ -31,6 +31,14 @@ public abstract class BaseRequestParams {
         itemList.add(item);
     }
 
+    public void addParam(String name, Object value, int paramType) {
+        ParamsItem item = new ParamsItem();
+        item.setKey(name);
+        item.setValue(value);
+        item.setParamType(paramType);
+        itemList.add(item);
+    }
+
     public void setParam(String keyName, Object value) {
         if (!hasKey(keyName)) {
             addParam(keyName, value);

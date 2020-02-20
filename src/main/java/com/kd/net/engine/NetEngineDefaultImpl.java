@@ -68,7 +68,13 @@ public class NetEngineDefaultImpl implements INetEngine {
                     reqParam.setMultipart(true);
                     httpMethodmethod = HttpMethod.POST;//如果是上传类型的请求 无论配置是get post或是其他 统一用post提交
                 }
-                reqParam.addParameter(items.getKey(), items.getValue());
+                if(items.getParamType() == ParamsItem.TYPE_APPLICATION_JSON){
+                    // json格式参数
+                    reqParam.setAsJsonContent(true);//设置为json内容
+                    reqParam.setBodyContent(items.getValue().toString());//设置正文内容
+                }else{
+                    reqParam.addParameter(items.getKey(), items.getValue());
+                }
             }
 //      * 设置header
             for (ParamsItem paramsItem : params.getHeaderParamList()) {
