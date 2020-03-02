@@ -8,11 +8,12 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+
+import com.example.xudeveframe.R;
 import com.kd.component.filter.adapter.MenuAdapter;
 import com.kd.component.filter.util.SimpleAnimationListener;
 import com.kd.component.filter.util.UIUtil;
 import com.kd.component.filter.view.FixedTabIndicator;
-import com.example.xudeveframe.R;
 
 /**
  * Created by baiiu.
@@ -252,4 +253,9 @@ public class DropDownMenu extends RelativeLayout implements View.OnClickListener
     }
 
 
+    public void hideFilterTab() {
+    }
+
+    public void showFilterTab() {
+    }
 }
