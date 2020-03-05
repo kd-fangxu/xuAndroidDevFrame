@@ -9,8 +9,6 @@ import com.kd.net.param.ParamsItem;
 import org.xutils.common.Callback;
 import org.xutils.http.HttpMethod;
 import org.xutils.http.RequestParams;
-import org.xutils.http.annotation.HttpResponse;
-import org.xutils.http.app.ResponseParser;
 import org.xutils.x;
 
 import java.io.File;
@@ -33,7 +31,7 @@ public class NetEngineDefaultImpl implements INetEngine {
     @Override
     public AbsCancelTask doRequest(String url, BaseRequestParams params, String method, final boolean isCacheFirst, final KdCallBack<String> commonBusListener) {
         final RequestParams reqParam = new RequestParams(url);
-        Log.e("kdRequest:doRequest==>", url);
+
         method = method.toLowerCase();
         HttpMethod httpMethodmethod = HttpMethod.GET;
         if (method.equals("get")) {
@@ -68,11 +66,11 @@ public class NetEngineDefaultImpl implements INetEngine {
                     reqParam.setMultipart(true);
                     httpMethodmethod = HttpMethod.POST;//如果是上传类型的请求 无论配置是get post或是其他 统一用post提交
                 }
-                if(items.getParamType() == ParamsItem.TYPE_APPLICATION_JSON){
+                if (items.getParamType() == ParamsItem.TYPE_APPLICATION_JSON) {
                     // json格式参数
                     reqParam.setAsJsonContent(true);//设置为json内容
                     reqParam.setBodyContent(items.getValue().toString());//设置正文内容
-                }else{
+                } else {
                     reqParam.addParameter(items.getKey(), items.getValue());
                 }
             }
@@ -87,7 +85,7 @@ public class NetEngineDefaultImpl implements INetEngine {
                 taskContext.cancel();//根据不同的引擎的任务取消方法  实现不同
             }
         };
-
+        Log.e("kdRequest:doRequest==>", reqParam.toString());
         cancelTask.setTaskContext(x.http().request(httpMethodmethod, reqParam, new Callback.CacheCallback<String>() {
 
                     @Override
@@ -105,6 +103,7 @@ public class NetEngineDefaultImpl implements INetEngine {
                     public void onSuccess(String result) {
                         if (commonBusListener != null && result != null) {
                             commonBusListener.onSucceed(result);
+                            Log.e("kdRequest:onSuccess==>", result);
                         }
                     }
 
