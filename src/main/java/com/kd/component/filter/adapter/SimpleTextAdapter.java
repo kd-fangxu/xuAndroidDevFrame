@@ -5,12 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.xudeveframe.R;
 import com.kd.component.filter.util.UIUtil;
 import com.kd.component.filter.view.FilterCheckedTextView;
 
 import java.util.List;
-
-import com.example.xudeveframe.R;
 
 /**
  * Created by baiiu on 15/12/23.
