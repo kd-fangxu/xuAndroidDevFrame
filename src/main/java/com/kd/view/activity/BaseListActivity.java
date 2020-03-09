@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.xudeveframe.R;
@@ -27,6 +28,7 @@ import java.util.List;
 public abstract class BaseListActivity
         extends KdBaseActivity {
     protected DropDownMenu dropDownMenu;
+    protected LinearLayout rootView;
     private MenuAdapter filterMenuAdapter;
     protected FrameLayout mFilterContentView;
     public int page = 1;
@@ -50,7 +52,7 @@ public abstract class BaseListActivity
             }
         });
         this.rvData.setAdapter(this.recycleAdapter);
-        this.refreshView = ((SwipeRefreshLayout) findViewById(R.id.rv_data));
+        this.refreshView = ((SwipeRefreshLayout) findViewById(R.id.refreshView));
         this.refreshView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -68,6 +70,12 @@ public abstract class BaseListActivity
         if (loacalMenuAdapter != null) {
             this.dropDownMenu.setMenuAdapter(loacalMenuAdapter);
         }
+        searchView = (SearchView) findViewById(R.id.searchView);
+        rvData = (RecyclerView) findViewById(R.id.rv_data);
+        refreshView = (SwipeRefreshLayout) findViewById(R.id.refreshView);
+        mFilterContentView = (FrameLayout) findViewById(R.id.mFilterContentView);
+        dropDownMenu = (DropDownMenu) findViewById(R.id.dropDownMenu);
+        rootView = (LinearLayout) findViewById(R.id.rootView);
     }
 
     MenuAdapter loacalMenuAdapter;
@@ -105,7 +113,7 @@ public abstract class BaseListActivity
     }
 
     public void hideSearchView(boolean paramBoolean) {
-        if (paramBoolean) {
+        if (!paramBoolean) {
             this.searchView.setVisibility(View.VISIBLE);
             return;
         }
@@ -125,6 +133,16 @@ public abstract class BaseListActivity
         initView();
     }
 
+    /**
+     * 资源id
+     *
+     * @param color
+     */
+    public void setRootViewBackGroundColor(int color) {
+//        rootView.setBackgroundResource(color);
+        rootView.setBackgroundColor(getResources().getColor(color));
+    }
+
     public void stopRefresh() {
         this.refreshView.postDelayed(new Runnable() {
             @Override
@@ -138,9 +156,9 @@ public abstract class BaseListActivity
             implements MenuAdapter {
         private List<List<FilterParam>> filterList = new ArrayList();
         FilterParamContainer filterParamContainer = new FilterParamContainer();
-        private BaseListActivity.OnDropDownMenuListener onFilterDoneListener;
+        private OnDropDownMenuListener onFilterDoneListener;
 
-        public DropMenuListAdapter(List<List<FilterParam>> filterList, BaseListActivity.OnDropDownMenuListener paramOnDropDownMenuListener) {
+        public DropMenuListAdapter(List<List<FilterParam>> filterList, OnDropDownMenuListener paramOnDropDownMenuListener) {
             this.filterList = filterList;
             this.onFilterDoneListener = paramOnDropDownMenuListener;
         }
@@ -165,10 +183,10 @@ public abstract class BaseListActivity
                 public void onItemClick(FilterParam paramAnonymousFilterParam) {
                     BaseListActivity.this.dropDownMenu.setPositionIndicatorText(paramInteger.intValue(), paramAnonymousFilterParam.getNameStr());
                     if (paramAnonymousFilterParam != null) {
-                        BaseListActivity.DropMenuListAdapter.this.filterParamContainer.put(paramAnonymousFilterParam.getKey(), paramAnonymousFilterParam.getParamValue());
+                        DropMenuListAdapter.this.filterParamContainer.put(paramAnonymousFilterParam.getKey(), paramAnonymousFilterParam.getParamValue());
                     }
-                    if (BaseListActivity.DropMenuListAdapter.this.onFilterDoneListener != null) {
-                        BaseListActivity.DropMenuListAdapter.this.onFilterDoneListener.onMenuClick(paramInteger.intValue(), paramAnonymousFilterParam.getNameStr(), paramAnonymousFilterParam, BaseListActivity.DropMenuListAdapter.this.filterParamContainer);
+                    if (DropMenuListAdapter.this.onFilterDoneListener != null) {
+                        DropMenuListAdapter.this.onFilterDoneListener.onMenuClick(paramInteger.intValue(), paramAnonymousFilterParam.getNameStr(), paramAnonymousFilterParam, DropMenuListAdapter.this.filterParamContainer);
                     }
                     BaseListActivity.this.dropDownMenu.close();
                     BaseListActivity.this.initRefreshParams();
