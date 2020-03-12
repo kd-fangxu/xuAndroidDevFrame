@@ -92,6 +92,9 @@ public abstract class KdBaseActivity extends AppCompatActivity {
         }
     }
 
+    public void hideNavigationBar() {
+    }
+
     @Override
     protected void onPause() {
 //        CacheManager.instance().flush();

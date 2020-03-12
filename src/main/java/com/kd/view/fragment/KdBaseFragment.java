@@ -40,9 +40,6 @@ public abstract class KdBaseFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initVariables();
-        setLayout();
-        loadData();
     }
 
     /**
