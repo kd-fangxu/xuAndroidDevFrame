@@ -254,8 +254,10 @@ public class DropDownMenu extends RelativeLayout implements View.OnClickListener
 
 
     public void hideFilterTab() {
+        fixedTabIndicator.setVisibility(View.GONE);
     }
 
     public void showFilterTab() {
+        fixedTabIndicator.setVisibility(View.VISIBLE);
     }
 }

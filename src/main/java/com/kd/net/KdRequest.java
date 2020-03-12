@@ -67,12 +67,14 @@ public class KdRequest {
      *
      * @return
      */
-    public synchronized static KdRequest getInstance() throws Exception {
+    public synchronized static KdRequest getInstance()  {
         if (manager == null) {
-            throw new Exception("KdRequest did not register");
+            LogUtils.e("KdRequest did not register");
+//            throw new Exception("KdRequest did not register");
         }
         if (manager.reqBeanProvider == null) {
-            throw new Exception("AbsReqBeanProviderImpl is null");
+            LogUtils.e("\"AbsReqBeanProviderImpl is null\"");
+//            throw new Exception("AbsReqBeanProviderImpl is null");
         }
         return getInstance(manager.reqBeanProvider);
     }
