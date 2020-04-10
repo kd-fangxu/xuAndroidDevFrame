@@ -80,7 +80,7 @@ public abstract class BaseListActivity extends KdBaseActivity {
         rootView = (LinearLayout) findViewById(R.id.rootView);
     }
 
-    MenuAdapter loacalMenuAdapter;
+   private  MenuAdapter loacalMenuAdapter;
 
     public abstract MenuAdapter createFilterMenuAdapter();
 
