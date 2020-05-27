@@ -37,20 +37,42 @@ public abstract class KdBaseActivity extends AppCompatActivity {
     }
 
     public void showProgressDialog(String title, String msg) {
-        if (title != null) {
-            dialog = new MaterialDialog.Builder(this)
-                    .title(title)
-                    .content(msg)
-                    .progress(true, 0)
-                    .show();
-        } else {
-            dialog = new MaterialDialog.Builder(this)
-                    .content(msg)
-                    .progress(true, 0)
-                    .show();
+        try {
+            if (title != null) {
+                dialog = new MaterialDialog.Builder(this)
+                        .title(title)
+                        .content(msg)
+                        .progress(true, 0)
+                        .show();
+            } else {
+                if (msg == null) {
+                    msg = "加载中..";
+                }
+                dialog = new MaterialDialog.Builder(this)
+                        .content(msg)
+                        .progress(true, 0)
+                        .show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
+    }
 
+    /**
+     * 显示单选列表项
+     *
+     * @param title
+     * @param positiveText
+     * @param singleChoice
+     * @param itemss
+     */
+    public void showSingleChoiceListDialog(String title, String positiveText, MaterialDialog.ListCallbackSingleChoice singleChoice, int selectedPosition, CharSequence... itemss) {
+        try {
+            dialog = new MaterialDialog.Builder(this).title(title).positiveText(positiveText).items(itemss).itemsCallbackSingleChoice(selectedPosition, singleChoice).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void dismissDialog() {

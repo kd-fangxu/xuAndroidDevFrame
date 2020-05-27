@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.xudeveframe.R;
@@ -42,16 +43,35 @@ public abstract class KdBaseCommonListFragment extends KdBaseFragment {
     private MenuAdapter filterMenuAdapter;
     public int page = 1;
     private BaseQuickAdapter recycleAdapter;
-    private View rootView;
+    public LinearLayout rootView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.view_common_list, container, false);
+        rootView = (LinearLayout) inflater.inflate(R.layout.view_common_list, container, false);
         initView(rootView);
+        setLayout();
         loadData();
         return rootView;
     }
+
+    // if (page == 1) {
+//        getRecycleAdapter().setNewData(records);
+//    } else {
+//        getRecycleAdapter().addData(records);
+//    }
+//
+//    Integer currentIndex = Integer.valueOf(pageBean.getCurrent());
+//    Integer totalPages = Integer.valueOf(pageBean.getPages());
+//                if (currentIndex.intValue() >= totalPages) {
+//        getRecycleAdapter().loadMoreEnd();
+//    } else {
+//        getRecycleAdapter().loadMoreComplete();
+//    }
+//    stopRefresh();
+    protected abstract void loadData();
+
+    protected abstract void setLayout();
 
     private void initView(View rootView) {
         searchView = (SearchView) rootView.findViewById(R.id.searchView);
@@ -71,6 +91,21 @@ public abstract class KdBaseCommonListFragment extends KdBaseFragment {
             }
         });
         this.rvData.setAdapter(this.recycleAdapter);
+
+        refreshView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                page = 1;
+                initRefreshParams();
+                loadData();
+            }
+        });
+        this.filterMenuAdapter = createFilterMenuAdapter();
+        loacalMenuAdapter = this.filterMenuAdapter;
+        if (loacalMenuAdapter != null) {
+            this.dropDownMenu.setMenuAdapter(loacalMenuAdapter);
+        }
+
     }
 
     MenuAdapter loacalMenuAdapter;
@@ -108,7 +143,7 @@ public abstract class KdBaseCommonListFragment extends KdBaseFragment {
     }
 
     public void hideSearchView(boolean paramBoolean) {
-        if (paramBoolean) {
+        if (!paramBoolean) {
             this.searchView.setVisibility(View.VISIBLE);
             return;
         }
@@ -116,11 +151,6 @@ public abstract class KdBaseCommonListFragment extends KdBaseFragment {
     }
 
     protected abstract void initRefreshParams();
-
-    @Override
-    public void loadData() {
-        super.loadData();
-    }
 
 
     public void stopRefresh() {

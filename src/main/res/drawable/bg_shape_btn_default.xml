@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
-        <layer-list>
-            <item>
-                <shape android:shape="rectangle">
-                    <corners android:radius="8dp"></corners>
-                    <solid android:color="@color/cornflowerblue"></solid>
-                </shape>
-            </item>
-        </layer-list>
+        <shape android:shape="rectangle">
+            <corners android:radius="8dp"></corners>
+            <solid android:color="@color/cornflowerblue"></solid>
+        </shape>
     </item>
-
 </selector>

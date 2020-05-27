@@ -30,42 +30,7 @@ public abstract class KdBaseFragment extends Fragment {
         initToast();
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
 
-    //onCreateView是创建的时候调用，onViewCreated是在onCreateView后被触发的事件
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    /**
-     * 参数初始化
-     */
-    public void initVariables() {
-    }
-
-    ;
-
-    /**
-     * view 初始化
-     */
-    public void setLayout() {
-
-    }
-
-    ;
-
-    /**
-     * 加载数据
-     */
-    public void loadData() {
-    }
-
-    ;
 
     @Deprecated
     @SuppressLint("ShowToast")
@@ -128,13 +93,6 @@ public abstract class KdBaseFragment extends Fragment {
 
     public KdBaseFragment() {
     }
-
-    ;
-
-//    public static KdBaseFragment newInstance() {
-//        KdBaseFragment fragment = new KdBaseFragment();
-//        return fragment;
-//    }
 
     public void showSnackbar(String msg, View view) {
         Snackbar.make(view, msg, Snackbar.LENGTH_SHORT).show();

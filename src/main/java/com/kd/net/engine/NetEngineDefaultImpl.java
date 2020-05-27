@@ -102,8 +102,8 @@ public class NetEngineDefaultImpl implements INetEngine {
                     @Override
                     public void onSuccess(String result) {
                         if (commonBusListener != null && result != null) {
-                            commonBusListener.onSucceed(result);
                             Log.e("kdRequest:onSuccess==>", result);
+                            commonBusListener.onSucceed(result);
                         }
                     }
 
