@@ -2,6 +2,7 @@ package com.kd.net.engine;
 
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.kd.callback.KdCallBack;
 import com.kd.net.param.BaseRequestParams;
 import com.kd.net.param.ParamsItem;
@@ -85,7 +86,7 @@ public class NetEngineDefaultImpl implements INetEngine {
                 taskContext.cancel();//根据不同的引擎的任务取消方法  实现不同
             }
         };
-        Log.e("kdRequest:doRequest==>", reqParam.toString());
+        LogUtils.e("kdRequest:doRequest==>", reqParam.toString());
         cancelTask.setTaskContext(x.http().request(httpMethodmethod, reqParam, new Callback.CacheCallback<String>() {
 
                     @Override
@@ -102,8 +103,8 @@ public class NetEngineDefaultImpl implements INetEngine {
                     @Override
                     public void onSuccess(String result) {
                         if (commonBusListener != null && result != null) {
-                            commonBusListener.onSucceed(result);
                             Log.e("kdRequest:onSuccess==>", result);
+                            commonBusListener.onSucceed(result);
                         }
                     }
 

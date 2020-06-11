@@ -49,7 +49,7 @@ public class DropDownMenu extends RelativeLayout implements View.OnClickListener
     }
 
     private void init(Context context) {
-        setBackgroundColor(Color.WHITE);
+        setBackgroundColor(Color.TRANSPARENT);
     }
 
     @Override
@@ -212,15 +212,12 @@ public class DropDownMenu extends RelativeLayout implements View.OnClickListener
                 //可移出去,进行每次展出
                 currentView.startAnimation(occurAnimation);
             }
-
-
         }
     }
 
 
     private void initAnimation() {
         occurAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.top_in);
-
         SimpleAnimationListener listener = new SimpleAnimationListener() {
             @Override
             public void onAnimationEnd(Animation animation) {

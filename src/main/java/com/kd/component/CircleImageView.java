@@ -10,6 +10,8 @@ import android.graphics.Region;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
+import com.example.xudeveframe.R;
+
 /**
  * android circle imageView
  *
@@ -45,7 +47,7 @@ public class CircleImageView extends ImageView {
         paint = new Paint();
         paint.setAntiAlias(true);
         paint.setFilterBitmap(true);
-        paint.setColor(Color.WHITE);
+        paint.setColor(getResources().getColor(R.color.whitesmoke));
 
     }
 
