@@ -4,62 +4,79 @@ import android.app.Dialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
+import com.blankj.utilcode.util.ActivityUtils;
 import com.example.xudeveframe.R;
-@Deprecated
+
+/**
+ * 全局加载框
+ *
+ * @author mac
+ */
 public class LoadingDialogUtil {
 
-	private volatile static LoadingDialogUtil mLoadingDialogUtil;
-	private  int mLoadingDialogCount;
-	private  Dialog mDialog;
+    private volatile static LoadingDialogUtil mLoadingDialogUtil;
+    private int mLoadingDialogCount;
+    private Dialog mDialog;
 
-	private LoadingDialogUtil(){};
-	
-	public static  LoadingDialogUtil getInstance(){
-		if(mLoadingDialogUtil ==null){
-			synchronized (LoadingDialogUtil.class) {
-				if(mLoadingDialogUtil==null){
-					mLoadingDialogUtil=new LoadingDialogUtil();
-				}
-			}
-			
-		}
-		return mLoadingDialogUtil;
-	}
-	
-	public synchronized  void showLoadingDialog(Context context, String msg) {
-		if (true) {
-			LayoutInflater inflater = LayoutInflater.from(context);
-			View v = inflater.inflate(R.layout.loading_dialog, null);
-			LinearLayout layout = (LinearLayout) v.findViewById(R.id.dialog_view);
-			ImageView spaceshipImage = (ImageView) v.findViewById(R.id.img);
-			TextView tipTextView = (TextView) v.findViewById(R.id.tipTextView);
-			Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(
-					context, R.anim.loading_animation);
-			spaceshipImage.startAnimation(hyperspaceJumpAnimation);
-			tipTextView.setText(msg);
+    private LoadingDialogUtil() {
+    }
 
-			mDialog = new Dialog(context, R.style.loading_dialog);
+    ;
 
-			mDialog.setCancelable(true);
-			mDialog.setContentView(layout, new LinearLayout.LayoutParams(
-					LinearLayout.LayoutParams.FILL_PARENT,
-					LinearLayout.LayoutParams.FILL_PARENT));
-			mDialog.show();
-		}
-		mLoadingDialogCount++;
-	}
+    public static LoadingDialogUtil getInstance() {
+        if (mLoadingDialogUtil == null) {
+            synchronized (LoadingDialogUtil.class) {
+                if (mLoadingDialogUtil == null) {
+                    mLoadingDialogUtil = new LoadingDialogUtil();
+                }
+            }
 
-	public synchronized  void cancelDialog() {
-		mLoadingDialogCount--;
-		if (mDialog!=null){
-			mDialog.dismiss();
-		}
+        }
+        return mLoadingDialogUtil;
+    }
 
-	}
+    @Deprecated
+    public synchronized void showLoadingDialog(Context context, String msg) {
+        if (true) {
+            LayoutInflater inflater = LayoutInflater.from(context);
+            View loadingView = inflater.inflate(R.layout.loading_dialog, null);
+            mDialog = new Dialog(context, R.style.loading_dialog);
+            mDialog.setCancelable(true);
+            mDialog.setContentView(loadingView, new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.FILL_PARENT,
+                    LinearLayout.LayoutParams.FILL_PARENT));
+            mDialog.show();
+        }
+        mLoadingDialogCount++;
+    }
+
+
+    public synchronized void showLoadingDialog(String msg) {
+        try {
+            LayoutInflater inflater = LayoutInflater.from(ActivityUtils.getTopActivity());
+            View loadingView = inflater.inflate(R.layout.loading_dialog, null);
+            mDialog = new Dialog(ActivityUtils.getTopActivity(), R.style.loading_dialog);
+            mDialog.setCancelable(true);
+            mDialog.setContentView(loadingView, new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.FILL_PARENT,
+                    LinearLayout.LayoutParams.FILL_PARENT));
+            mDialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (mDialog != null) {
+            mDialog.dismiss();
+        }
+
+    }
+
+    public synchronized void cancelDialog() {
+        mLoadingDialogCount--;
+        if (mDialog != null) {
+            mDialog.dismiss();
+        }
+
+    }
 }
