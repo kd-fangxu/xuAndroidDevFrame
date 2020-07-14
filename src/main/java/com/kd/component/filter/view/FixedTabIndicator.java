@@ -14,9 +14,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.example.xudeveframe.R;
 import com.kd.component.filter.adapter.MenuAdapter;
 import com.kd.component.filter.util.UIUtil;
-import com.example.xudeveframe.R;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -231,7 +233,7 @@ public class FixedTabIndicator extends LinearLayout {
         tv.setTextColor(mTabDefaultColor);
         tv.setSingleLine();
         tv.setEllipsize(TextUtils.TruncateAt.END);
-        tv.setMaxEms(6);//限制4个字符
+        tv.setMaxEms(12);//限制4个字符
 
         Drawable drawable = getResources().getDrawable(R.drawable.level_filter);
         tv.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);

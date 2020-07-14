@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.xudeveframe.R;
 import com.kd.component.filter.DropDownMenu;
@@ -39,48 +40,93 @@ public abstract class BaseListActivity extends KdBaseActivity {
     protected RecyclerView rvData;
     protected SearchView searchView;
 
-    private void initView() {
-        this.rvData = ((RecyclerView) findViewById(R.id.rv_data));
+    private boolean canLoadMore;
+    private boolean canRefresh;
+
+    public boolean isCanRefresh() {
+        return canRefresh;
+    }
+
+    public void setCanRefresh(boolean canRefresh) {
+        this.canRefresh = canRefresh;
+        if (canRefresh) {
+            initRefresh();
+        } else {
+            if (refreshView != null) {
+                refreshView.setEnabled(false);
+                refreshView.setOnRefreshListener(null);
+            }
+        }
+    }
+
+    public boolean isCanLoadMore() {
+        return canLoadMore;
+    }
+
+    public void setCanLoadMore(boolean canLoadMore) {
+        this.canLoadMore = canLoadMore;
+        if (recycleAdapter != null) {
+            initLoadMore(canLoadMore);
+        }
+    }
+
+    private void initLoadMore(final boolean canLoadMore) {
+        if (canLoadMore) {
+            this.recycleAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+                @Override
+                public void onLoadMoreRequested() {
+                    if (canLoadMore) {
+                        LogUtils.d("load more");
+                        if (recycleAdapter.getData().size() > 0) {
+                            page++;
+                            loadData();
+                        }
+                    }
+                }
+            });
+        } else {
+            recycleAdapter.setOnLoadMoreListener(null);
+        }
+    }
+
+    protected void initViewDefauleConfig() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         this.rvData.setLayoutManager(linearLayoutManager);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         this.recycleAdapter = createRecycleAdapter();
-        this.recycleAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
-            @Override
-            public void onLoadMoreRequested() {
-                BaseListActivity localBaseListActivity = BaseListActivity.this;
-                localBaseListActivity.page += 1;
-                BaseListActivity.this.loadData();
-            }
-        });
+        initLoadMore(isCanLoadMore());
         this.rvData.setAdapter(this.recycleAdapter);
-        this.refreshView = ((SwipeRefreshLayout) findViewById(R.id.refreshView));
+        if (isCanRefresh()) {
+            initRefresh();
+        } else {
+            setCanRefresh(false);
+        }
+        this.filterMenuAdapter = createFilterMenuAdapter();
+        loacalMenuAdapter = this.filterMenuAdapter;
+        if (loacalMenuAdapter != null) {
+            this.dropDownMenu.setMenuAdapter(loacalMenuAdapter);
+        }
+        this.recycleAdapter.setEmptyView(R.layout.layout_nodata,this.rvData);
+    }
+
+    private void initRefresh() {
+        if (refreshView == null) {
+            return;
+        }
+        this.refreshView.setEnabled(true);
         this.refreshView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                LogUtils.d("do refresh");
                 BaseListActivity localBaseListActivity = BaseListActivity.this;
                 localBaseListActivity.page = 1;
                 localBaseListActivity.getRecycleAdapter().getData().clear();
                 BaseListActivity.this.loadData();
             }
         });
-        this.mFilterContentView = ((FrameLayout) findViewById(R.id.mFilterContentView));
-        this.dropDownMenu = ((DropDownMenu) findViewById(R.id.dropDownMenu));
-        this.searchView = ((SearchView) findViewById(R.id.searchView));
-        this.filterMenuAdapter = createFilterMenuAdapter();
-        loacalMenuAdapter = this.filterMenuAdapter;
-        if (loacalMenuAdapter != null) {
-            this.dropDownMenu.setMenuAdapter(loacalMenuAdapter);
-        }
-        searchView = (SearchView) findViewById(R.id.searchView);
-        rvData = (RecyclerView) findViewById(R.id.rv_data);
-        refreshView = (SwipeRefreshLayout) findViewById(R.id.refreshView);
-        mFilterContentView = (FrameLayout) findViewById(R.id.mFilterContentView);
-        dropDownMenu = (DropDownMenu) findViewById(R.id.dropDownMenu);
-        rootView = (LinearLayout) findViewById(R.id.rootView);
     }
 
-   private  MenuAdapter loacalMenuAdapter;
+    private MenuAdapter loacalMenuAdapter;
 
     public abstract MenuAdapter createFilterMenuAdapter();
 
@@ -95,7 +141,8 @@ public abstract class BaseListActivity extends KdBaseActivity {
     }
 
     public BaseQuickAdapter getRecycleAdapter() {
-        return this.recycleAdapter;
+        BaseQuickAdapter recycleAdapter = createRecycleAdapter();
+        return recycleAdapter;
     }
 
     public RecyclerView getRecycleView() {
@@ -131,8 +178,15 @@ public abstract class BaseListActivity extends KdBaseActivity {
 
     @Override
     public void setLayout(Bundle paramBundle) {
+        LogUtils.d("setLayout");
         setContentView(R.layout.view_common_list);
-        initView();
+        this.rvData = ((RecyclerView) findViewById(R.id.rv_data));
+        this.refreshView = ((SwipeRefreshLayout) findViewById(R.id.refreshView));
+        this.mFilterContentView = ((FrameLayout) findViewById(R.id.mFilterContentView));
+        this.dropDownMenu = ((DropDownMenu) findViewById(R.id.dropDownMenu));
+        this.searchView = ((SearchView) findViewById(R.id.searchView));
+        rootView = (LinearLayout) findViewById(R.id.rootView);
+        initViewDefauleConfig();
     }
 
     /**

@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.LinearLayout;
 
 import com.blankj.utilcode.util.ActivityUtils;
@@ -53,30 +54,39 @@ public class LoadingDialogUtil {
     }
 
 
-    public synchronized void showLoadingDialog(String msg) {
+    public synchronized void showLoadingDialog() {
         try {
+            if (mDialog != null) {
+                mDialog.dismiss();
+            }
             LayoutInflater inflater = LayoutInflater.from(ActivityUtils.getTopActivity());
             View loadingView = inflater.inflate(R.layout.loading_dialog, null);
             mDialog = new Dialog(ActivityUtils.getTopActivity(), R.style.loading_dialog);
             mDialog.setCancelable(true);
+
             mDialog.setContentView(loadingView, new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.FILL_PARENT,
                     LinearLayout.LayoutParams.FILL_PARENT));
+            Window dialogWindow = mDialog.getWindow();
+            dialogWindow.setBackgroundDrawableResource(android.R.color.transparent);//
             mDialog.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (mDialog != null) {
-            mDialog.dismiss();
-        }
+
 
     }
 
     public synchronized void cancelDialog() {
-        mLoadingDialogCount--;
-        if (mDialog != null) {
-            mDialog.dismiss();
+        try {
+            mLoadingDialogCount--;
+            if (mDialog != null) {
+                mDialog.dismiss();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
 
     }
 }
