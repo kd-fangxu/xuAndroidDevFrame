@@ -1,23 +1,25 @@
-package com.kd.view.activity;
+package com.kd.ui.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 
+/**
+ * @author mac
+ */
 public abstract class KdBaseActivity extends AppCompatActivity {
-
-
     public Handler mHandler;
-    private Toast temToast;
     public MaterialDialog dialog;
+    private Toast temToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

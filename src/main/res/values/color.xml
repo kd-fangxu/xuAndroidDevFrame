@@ -4,6 +4,7 @@
 
     <color name="black_p50">#7f000000</color>
     <color name="gray_e7e7e7">#e7e7e7</color>
+    <color name="gray_bg"></color>
     <color name="b_c_fafafa">#fafafa</color>
     <color name="blue_4285f4">#4285f4</color>
     <color name="black_5a626d">#5a626d</color>
@@ -307,4 +308,5 @@
     <color name="red_alert">#ff6072</color>
     <color name="mask_white">#30ffffff</color>
     <color name="green_pass">#679903</color>
+    <color name="transparent">#00679903</color>
 </resources>

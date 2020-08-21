@@ -1,20 +1,22 @@
-package com.kd.view.mvp;
+package com.kd.ui.mvp;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
+
+import androidx.fragment.app.Fragment;
 
 /**
  * Created by developer on 2016/12/28.
  */
 
-public abstract class BaseMvpFragment<T extends BasePresenter,V extends IBaseUiAction> extends Fragment implements IBaseUiAction {
-    private  T mPresenter;
+public abstract class BaseMvpFragment<T extends BasePresenter, V extends IBaseUiAction> extends Fragment implements IBaseUiAction {
+    private T mPresenter;
+
     abstract void initPresenter();
 
     @Override
     public void onAttach(Context context) {
         initPresenter();
-        mPresenter.attachView((V)this);
+        mPresenter.attachView((V) this);
         super.onAttach(context);
     }
 

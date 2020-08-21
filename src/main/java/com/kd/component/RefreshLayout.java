@@ -1,7 +1,6 @@
 package com.kd.component;
 
 import android.content.Context;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +9,8 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
+
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.xudeveframe.R;
 
@@ -144,7 +145,7 @@ public class RefreshLayout extends SwipeRefreshLayout implements OnScrollListene
      */
     private boolean isBottom() {
 
-        if (mListView != null && mListView.getAdapter() != null && mListView.getAdapter().getCount()>0) {
+        if (mListView != null && mListView.getAdapter() != null && mListView.getAdapter().getCount() > 0) {
             if (mListView.getLastVisiblePosition() == (mListView.getAdapter().getCount() - 1)) {
                 View bottomView = mListView.getChildAt(mListView.getLastVisiblePosition() - mListView.getFirstVisiblePosition());
                 return mListView.getHeight() >= bottomView.getBottom();
@@ -197,6 +198,7 @@ public class RefreshLayout extends SwipeRefreshLayout implements OnScrollListene
     }
 
     /**
+     *
      */
     public void setOnLoadListener(OnLoadListener loadListener) {
         mOnLoadListener = loadListener;

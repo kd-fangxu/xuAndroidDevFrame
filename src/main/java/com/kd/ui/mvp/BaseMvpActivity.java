@@ -1,8 +1,8 @@
-package com.kd.view.mvp;
+package com.kd.ui.mvp;
 
 import android.os.Bundle;
 
-import com.kd.view.activity.KdBaseActivity;
+import com.kd.ui.activity.KdBaseActivity;
 
 /**
  * Created by developer on 16/6/29.

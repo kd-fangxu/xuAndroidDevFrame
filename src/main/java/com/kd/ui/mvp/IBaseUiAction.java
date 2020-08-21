@@ -1,4 +1,4 @@
-package com.kd.view.mvp;
+package com.kd.ui.mvp;
 
 /**
  * 定义通用的ui行为

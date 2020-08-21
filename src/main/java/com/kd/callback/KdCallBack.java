@@ -6,5 +6,7 @@ public interface KdCallBack<T> {
 
     void onFailed(Throwable ex);
 
+    void onFinish();
+
 
 }

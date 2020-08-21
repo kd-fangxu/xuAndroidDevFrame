@@ -1,4 +1,4 @@
-package com.kd.view.mvp;
+package com.kd.ui.mvp;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;

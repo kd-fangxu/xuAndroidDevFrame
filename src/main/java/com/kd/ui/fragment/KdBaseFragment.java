@@ -1,17 +1,16 @@
-package com.kd.view.fragment;
+package com.kd.ui.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.material.snackbar.Snackbar;
 //import com.xudev.utils.cacheManager.CacheManager;
 
 /**
@@ -20,8 +19,12 @@ import com.afollestad.materialdialogs.MaterialDialog;
 public abstract class KdBaseFragment extends Fragment {
 
     public Handler mHandler;
-    private Toast temToast;
     public MaterialDialog dialog;
+    boolean isShownInAct = true;//是否在act中显示
+    private Toast temToast;
+
+    public KdBaseFragment() {
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,7 +33,8 @@ public abstract class KdBaseFragment extends Fragment {
         initToast();
     }
 
-
+    public void hideNavigationBar() {
+    }
 
     @Deprecated
     @SuppressLint("ShowToast")
@@ -38,7 +42,6 @@ public abstract class KdBaseFragment extends Fragment {
         // TODO Auto-generated method stub
         temToast = Toast.makeText(getActivity(), "", Toast.LENGTH_SHORT);
     }
-
 
     public void showToast(String msg) {
         if (temToast == null) {
@@ -87,11 +90,6 @@ public abstract class KdBaseFragment extends Fragment {
 
     public void setShownInAct(boolean shownInAct) {
         isShownInAct = shownInAct;
-    }
-
-    boolean isShownInAct = true;//是否在act中显示
-
-    public KdBaseFragment() {
     }
 
     public void showSnackbar(String msg, View view) {

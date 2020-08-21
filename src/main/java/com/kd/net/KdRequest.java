@@ -1,9 +1,10 @@
 package com.kd.net;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.EditText;
+
+import androidx.annotation.NonNull;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -67,13 +68,12 @@ public class KdRequest {
      *
      * @return
      */
-    public synchronized static KdRequest getInstance()  {
+    public synchronized static KdRequest getInstance() {
         if (manager == null) {
-            LogUtils.e("KdRequest did not register");
-//            throw new Exception("KdRequest did not register");
+            manager = new KdRequest();
         }
         if (manager.reqBeanProvider == null) {
-            LogUtils.e("\"AbsReqBeanProviderImpl is null\"");
+//            LogUtils.e("\"AbsReqBeanProviderImpl is null\"");
 //            throw new Exception("AbsReqBeanProviderImpl is null");
         }
         return getInstance(manager.reqBeanProvider);

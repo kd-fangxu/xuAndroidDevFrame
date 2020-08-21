@@ -1,11 +1,10 @@
 package com.kd.net.engine;
 
-import android.util.Log;
-
 import com.blankj.utilcode.util.LogUtils;
 import com.kd.callback.KdCallBack;
 import com.kd.net.param.BaseRequestParams;
 import com.kd.net.param.ParamsItem;
+import com.kd.utils.dialog.LoadingDialogUtil;
 
 import org.xutils.common.Callback;
 import org.xutils.http.HttpMethod;
@@ -15,7 +14,8 @@ import org.xutils.x;
 import java.io.File;
 
 /**
- * Created by developer on 2016/12/21.
+ * @author developer
+ * @date 2016/12/21
  */
 
 public class NetEngineDefaultImpl implements INetEngine {
@@ -103,7 +103,7 @@ public class NetEngineDefaultImpl implements INetEngine {
                     @Override
                     public void onSuccess(String result) {
                         if (commonBusListener != null && result != null) {
-                            Log.e("kdRequest:onSuccess==>", result);
+                            LogUtils.d("onSuccess" + "\n  url：" + reqParam.toString(), "\n result:" + result);
                             commonBusListener.onSucceed(result);
                         }
                     }
@@ -111,7 +111,7 @@ public class NetEngineDefaultImpl implements INetEngine {
                     @Override
                     public void onError(Throwable ex, boolean isOnCallback) {
                         if (commonBusListener != null) {
-                            Log.e("kdRequest:onError==>", ex.toString());
+                            LogUtils.d("onError" + "\n  url：" + reqParam.toString(), "\n errpr:" + ex.toString());
                             commonBusListener.onFailed(ex);
                         }
 
@@ -124,7 +124,8 @@ public class NetEngineDefaultImpl implements INetEngine {
 
                     @Override
                     public void onFinished() {
-
+                        LoadingDialogUtil.getInstance().cancelDialog();
+                        commonBusListener.onFinish();
                     }
                 })
         );

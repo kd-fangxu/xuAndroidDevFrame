@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 建议LzBaseListAct LzBaseListFrag 配置自动请求参数
  * @author mac
  */
 public class FilterParamContainer {

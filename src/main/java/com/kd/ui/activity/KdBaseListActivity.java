@@ -1,16 +1,15 @@
-package com.kd.view.fragment;
+package com.kd.ui.activity;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -25,9 +24,7 @@ import com.kd.component.filter.view.FilterCheckedTextView;
 import com.kd.component.filter.vo.FilterParam;
 import com.kd.component.filter.vo.FilterParamContainer;
 import com.kd.net.param.BaseRequestParams;
-import com.kd.view.activity.BaseListActivity;
-
-import org.xutils.x;
+import com.kd.ui.listener.OnDropDownMenuListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,18 +32,24 @@ import java.util.List;
 /**
  * @author mac
  */
-public abstract class KdBaseCommonListFragment extends KdBaseFragment {
-    protected SearchView searchView;
-    protected RecyclerView rvData;
-    protected SwipeRefreshLayout refreshView;
-    protected FrameLayout mFilterContentView;
-    protected DropDownMenu dropDownMenu;
-    private MenuAdapter filterMenuAdapter;
+public abstract class KdBaseListActivity extends KdBaseActivity {
     public int page = 1;
+    /**
+     * keyword 子类的param 要添加
+     */
+    public String param_keyword;
+    protected DropDownMenu dropDownMenu;
+    protected LinearLayout rootView;
+    protected FrameLayout mFilterContentView;
+    protected SwipeRefreshLayout refreshView;
+    protected RecyclerView rvData;
+    protected SearchView searchView;
+    private Toolbar toolbar;
+    private MenuAdapter filterMenuAdapter;
     private BaseQuickAdapter recycleAdapter;
-    public LinearLayout rootView;
     private boolean canLoadMore;
     private boolean canRefresh;
+    private MenuAdapter loacalMenuAdapter;
 
     public boolean isCanRefresh() {
         return canRefresh;
@@ -64,6 +67,18 @@ public abstract class KdBaseCommonListFragment extends KdBaseFragment {
         }
     }
 
+    public Toolbar getToolbar() {
+        return toolbar;
+    }
+
+    @Override
+    public void hideNavigationBar() {
+        super.hideNavigationBar();
+        if (toolbar != null) {
+            toolbar.setVisibility(View.GONE);
+        }
+    }
+
     public boolean isCanLoadMore() {
         return canLoadMore;
     }
@@ -74,36 +89,6 @@ public abstract class KdBaseCommonListFragment extends KdBaseFragment {
             initLoadMore(canLoadMore);
         }
     }
-
-    protected void initViewDefauleConfig() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        this.rvData.setLayoutManager(linearLayoutManager);
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        this.recycleAdapter = createRecycleAdapter();
-        this.recycleAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
-            @Override
-            public void onLoadMoreRequested() {
-                page += 1;
-                loadData();
-            }
-        });
-        this.rvData.setAdapter(this.recycleAdapter);
-
-        refreshView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                page = 1;
-                initRefreshParams();
-                loadData();
-            }
-        });
-        this.filterMenuAdapter = createFilterMenuAdapter();
-        loacalMenuAdapter = this.filterMenuAdapter;
-        if (loacalMenuAdapter != null) {
-            this.dropDownMenu.setMenuAdapter(loacalMenuAdapter);
-        }
-    }
-
 
     private void initLoadMore(final boolean canLoadMore) {
         if (canLoadMore) {
@@ -121,9 +106,54 @@ public abstract class KdBaseCommonListFragment extends KdBaseFragment {
             });
         } else {
             recycleAdapter.setOnLoadMoreListener(null);
-            recycleAdapter.setEnableLoadMore(false);
         }
+    }
 
+    protected void initViewDefauleConfig() {
+
+        getSearchView().setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                LogUtils.e(s);
+                param_keyword = s;
+                loadData();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                LogUtils.e(s);
+                param_keyword = s;
+                return false;
+            }
+        });
+        getSearchView().setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                param_keyword = "";
+                page = 1;
+                loadData();
+                return false;
+            }
+        });
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        this.rvData.setLayoutManager(linearLayoutManager);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        this.recycleAdapter = createRecycleAdapter();
+        initLoadMore(isCanLoadMore());
+        this.rvData.setAdapter(this.recycleAdapter);
+        if (isCanRefresh()) {
+            initRefresh();
+        } else {
+            setCanRefresh(false);
+        }
+        this.filterMenuAdapter = createFilterMenuAdapter();
+        loacalMenuAdapter = this.filterMenuAdapter;
+        if (loacalMenuAdapter != null) {
+            this.dropDownMenu.setMenuAdapter(loacalMenuAdapter);
+        }
+        this.recycleAdapter.setEmptyView(R.layout.layout_nodata, this.rvData);
     }
 
     private void initRefresh() {
@@ -135,54 +165,13 @@ public abstract class KdBaseCommonListFragment extends KdBaseFragment {
             @Override
             public void onRefresh() {
                 LogUtils.d("do refresh");
-                page = 1;
-                getRecycleAdapter().getData().clear();
-                loadData();
+                KdBaseListActivity localKdBaseListActivity = KdBaseListActivity.this;
+                localKdBaseListActivity.page = 1;
+                localKdBaseListActivity.getRecycleAdapter().getData().clear();
+                KdBaseListActivity.this.loadData();
             }
         });
     }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = (LinearLayout) inflater.inflate(R.layout.view_common_list, container, false);
-        initView(rootView);
-        setLayout();
-        loadData();
-        return rootView;
-    }
-
-    // if (page == 1) {
-//        getRecycleAdapter().setNewData(records);
-//    } else {
-//        getRecycleAdapter().addData(records);
-//    }
-//
-//    Integer currentIndex = Integer.valueOf(pageBean.getCurrent());
-//    Integer totalPages = Integer.valueOf(pageBean.getPages());
-//                if (currentIndex.intValue() >= totalPages) {
-//        getRecycleAdapter().loadMoreEnd();
-//    } else {
-//        getRecycleAdapter().loadMoreComplete();
-//    }
-//    stopRefresh();
-    protected abstract void loadData();
-
-    protected abstract void setLayout();
-
-    private void initView(View rootView) {
-        searchView = (SearchView) rootView.findViewById(R.id.searchView);
-        rvData = (RecyclerView) rootView.findViewById(R.id.rv_data);
-        refreshView = (SwipeRefreshLayout) rootView.findViewById(R.id.refreshView);
-        mFilterContentView = (FrameLayout) rootView.findViewById(R.id.mFilterContentView);
-        dropDownMenu = (DropDownMenu) rootView.findViewById(R.id.dropDownMenu);
-
-
-        initViewDefauleConfig();
-
-    }
-
-    MenuAdapter loacalMenuAdapter;
 
     public abstract MenuAdapter createFilterMenuAdapter();
 
@@ -197,7 +186,8 @@ public abstract class KdBaseCommonListFragment extends KdBaseFragment {
     }
 
     public BaseQuickAdapter getRecycleAdapter() {
-        return this.recycleAdapter;
+        BaseQuickAdapter recycleAdapter = createRecycleAdapter();
+        return recycleAdapter;
     }
 
     public RecyclerView getRecycleView() {
@@ -226,34 +216,57 @@ public abstract class KdBaseCommonListFragment extends KdBaseFragment {
 
     protected abstract void initRefreshParams();
 
+    @Override
+    public void loadData() {
+        super.loadData();
+    }
+
+    @Override
+    public void setLayout(Bundle paramBundle) {
+        setContentView(R.layout.view_common_list);
+        this.rvData = ((RecyclerView) findViewById(R.id.rv_data));
+        this.refreshView = ((SwipeRefreshLayout) findViewById(R.id.refreshView));
+        this.mFilterContentView = ((FrameLayout) findViewById(R.id.mFilterContentView));
+        this.dropDownMenu = ((DropDownMenu) findViewById(R.id.dropDownMenu));
+        this.searchView = ((SearchView) findViewById(R.id.searchView));
+        rootView = (LinearLayout) findViewById(R.id.rootView);
+        toolbar = findViewById(R.id.vToolBar);
+        initViewDefauleConfig();
+    }
 
     public void stopRefresh() {
         this.refreshView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                refreshView.setRefreshing(false);
+                KdBaseListActivity.this.refreshView.setRefreshing(false);
             }
         }, 500L);
     }
 
+    public FilterParamContainer getCurrentParamContainer() {
+        return currentParamContainer;
+    }
+
+    private FilterParamContainer currentParamContainer;
+
     public class DropMenuListAdapter
             implements MenuAdapter {
-        private List<List<FilterParam>> filterList = new ArrayList();
         FilterParamContainer filterParamContainer = new FilterParamContainer();
-        private BaseListActivity.OnDropDownMenuListener onFilterDoneListener;
+        private List<List<FilterParam>> filterList = new ArrayList();
+        private OnDropDownMenuListener onFilterDoneListener;
 
-        public DropMenuListAdapter(List<List<FilterParam>> filterList, BaseListActivity.OnDropDownMenuListener paramOnDropDownMenuListener) {
+        public DropMenuListAdapter(List<List<FilterParam>> filterList, OnDropDownMenuListener paramOnDropDownMenuListener) {
             this.filterList = filterList;
             this.onFilterDoneListener = paramOnDropDownMenuListener;
         }
 
         private View createSingleListView(List<FilterParam> paramList, final Integer paramInteger) {
-            SingleListView<FilterParam> singleListView = new SingleListView<FilterParam>(getActivity());
-            singleListView.adapter(new SimpleTextAdapter<FilterParam>(null, getActivity()) {
+            SingleListView<FilterParam> singleListView = new SingleListView<FilterParam>(KdBaseListActivity.this);
+            singleListView.adapter(new SimpleTextAdapter<FilterParam>(null, KdBaseListActivity.this) {
 
                 @Override
                 protected void initCheckedTextView(FilterCheckedTextView paramAnonymousFilterCheckedTextView) {
-                    int i = UIUtil.dp(getActivity(), 15);
+                    int i = UIUtil.dp(KdBaseListActivity.this, 12);
                     paramAnonymousFilterCheckedTextView.setPadding(i, i, 0, i);
                 }
 
@@ -265,20 +278,22 @@ public abstract class KdBaseCommonListFragment extends KdBaseFragment {
             singleListView.onItemClick(new OnFilterItemClickListener<FilterParam>() {
                 @Override
                 public void onItemClick(FilterParam paramAnonymousFilterParam) {
-                    dropDownMenu.setPositionIndicatorText(paramInteger.intValue(), paramAnonymousFilterParam.getNameStr());
+                    KdBaseListActivity.this.dropDownMenu.setPositionIndicatorText(paramInteger.intValue(), paramAnonymousFilterParam.getNameStr());
                     if (paramAnonymousFilterParam != null) {
-                        filterParamContainer.put(paramAnonymousFilterParam.getKey(), paramAnonymousFilterParam.getParamValue());
+                        DropMenuListAdapter.this.filterParamContainer.put(paramAnonymousFilterParam.getKey(), paramAnonymousFilterParam.getParamValue());
                     }
-                    if (onFilterDoneListener != null) {
-                        onFilterDoneListener.onMenuClick(paramInteger.intValue(), paramAnonymousFilterParam.getNameStr(), paramAnonymousFilterParam, filterParamContainer);
+                    currentParamContainer = filterParamContainer;
+                    if (DropMenuListAdapter.this.onFilterDoneListener != null) {
+                        DropMenuListAdapter.this.onFilterDoneListener.onMenuClick(paramInteger.intValue(), paramAnonymousFilterParam.getNameStr(), paramAnonymousFilterParam, DropMenuListAdapter.this.filterParamContainer);
                     }
-                    dropDownMenu.close();
-                    initRefreshParams();
-                    loadData();
+                    KdBaseListActivity.this.dropDownMenu.close();
+                    KdBaseListActivity.this.initRefreshParams();
+                    page = 1;
+                    KdBaseListActivity.this.refreshView.setRefreshing(true);
+                    KdBaseListActivity.this.loadData();
                 }
             });
             singleListView.setList(paramList, 0);
-
             return singleListView;
         }
 
@@ -288,7 +303,7 @@ public abstract class KdBaseCommonListFragment extends KdBaseFragment {
 
         @Override
         public int getBottomMargin(int paramInt) {
-            return UIUtil.dp(x.app().getApplicationContext(), 140);
+            return UIUtil.dp(KdBaseListActivity.this.getApplicationContext(), 140);
         }
 
         public FilterParamContainer getFilterParamContainer() {
@@ -314,9 +329,5 @@ public abstract class KdBaseCommonListFragment extends KdBaseFragment {
             paramFrameLayout.getChildAt(paramInt);
             return createSingleListView((List) this.filterList.get(paramInt), Integer.valueOf(paramInt));
         }
-    }
-
-    public interface OnDropDownMenuListener {
-        void onMenuClick(int paramInt, String paramString, FilterParam paramFilterParam, FilterParamContainer paramFilterParamContainer);
     }
 }
