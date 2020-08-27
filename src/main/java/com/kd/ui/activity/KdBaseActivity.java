@@ -20,6 +20,15 @@ public abstract class KdBaseActivity extends AppCompatActivity {
     public Handler mHandler;
     public MaterialDialog dialog;
     private Toast temToast;
+    private boolean loadOnCreate = true; //0 onCreate 1:onResume
+
+    /**
+     *  设置loadData oncreate加载
+     * @param loadOnCreate
+     */
+    public void setLoadDataOnCreate(boolean loadOnCreate) {
+        this.loadOnCreate = loadOnCreate;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +37,9 @@ public abstract class KdBaseActivity extends AppCompatActivity {
         mHandler = new Handler();
         initToast();
         setLayout(savedInstanceState);
-        loadData();
+        if (loadOnCreate) {
+            loadData();
+        }
     }
 
     public abstract void setLayout(Bundle savedInstanceState);

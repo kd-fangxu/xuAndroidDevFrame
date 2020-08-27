@@ -97,6 +97,7 @@ public abstract class KdBaseListFragment extends KdBaseFragment {
                 loadData();
             }
         });
+        this.recycleAdapter.setEmptyView(R.layout.layout_nodata, this.rvData);
         this.rvData.setAdapter(this.recycleAdapter);
 // TODO: 2020/8/10 待支持配置
         refreshView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -112,7 +113,6 @@ public abstract class KdBaseListFragment extends KdBaseFragment {
         if (loacalMenuAdapter != null) {
             this.dropDownMenu.setMenuAdapter(loacalMenuAdapter);
         }
-        this.recycleAdapter.setEmptyView(R.layout.layout_nodata, this.rvData);
     }
 
     private void initLoadMore(final boolean canLoadMore) {
@@ -324,4 +324,6 @@ public abstract class KdBaseListFragment extends KdBaseFragment {
             return createSingleListView((List) this.filterList.get(paramInt), Integer.valueOf(paramInt));
         }
     }
+
+
 }
