@@ -111,7 +111,7 @@ public class NetEngineDefaultImpl implements INetEngine {
                     @Override
                     public void onError(Throwable ex, boolean isOnCallback) {
                         if (commonBusListener != null) {
-                            LogUtils.d("onError" + "\n  url：" + reqParam.toString(), "\n errpr:" + ex.toString());
+                            LogUtils.d("onError" + "\n  url：" + reqParam.toString(), "\n error:" + ex.toString());
                             commonBusListener.onFailed(ex);
                         }
 
