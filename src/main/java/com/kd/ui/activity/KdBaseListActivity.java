@@ -37,7 +37,7 @@ public abstract class KdBaseListActivity extends KdBaseActivity {
     /**
      * keyword 子类的param 要添加
      */
-    public String param_keyword;
+    public String param_keyword = "";
     protected DropDownMenu dropDownMenu;
     protected LinearLayout rootView;
     protected FrameLayout mFilterContentView;
@@ -109,6 +109,21 @@ public abstract class KdBaseListActivity extends KdBaseActivity {
         }
     }
 
+    public boolean isLoadOnSearchTextChanged() {
+        return loadOnSearchTextChanged;
+    }
+
+    /**
+     * searchView变化实时请求数据
+     *
+     * @param loadOnSearchTextChanged
+     */
+    public void setLoadOnSearchTextChanged(boolean loadOnSearchTextChanged) {
+        this.loadOnSearchTextChanged = loadOnSearchTextChanged;
+    }
+
+    public boolean loadOnSearchTextChanged = false;
+
     protected void initViewDefauleConfig() {
 
         getSearchView().setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -116,6 +131,9 @@ public abstract class KdBaseListActivity extends KdBaseActivity {
             public boolean onQueryTextSubmit(String s) {
                 LogUtils.e(s);
                 param_keyword = s;
+                if (isLoadOnSearchTextChanged()) {
+                    return false;
+                }
                 loadData();
                 return false;
             }
@@ -124,6 +142,9 @@ public abstract class KdBaseListActivity extends KdBaseActivity {
             public boolean onQueryTextChange(String s) {
                 LogUtils.e(s);
                 param_keyword = s;
+                if (isLoadOnSearchTextChanged()) {
+                    loadData();
+                }
                 return false;
             }
         });

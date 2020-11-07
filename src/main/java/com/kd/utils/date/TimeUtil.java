@@ -190,8 +190,53 @@ public class TimeUtil {
                 result = getTime(clearTime);
                 break;
         }
-
         return result;
+    }
+
+    /**
+     * 返回自动天数叫法
+     *
+     * @param timesamp
+     * @return
+     */
+    public static String getAutoDayTime(long timesamp) {
+        long clearTime = timesamp * 1000;
+        String result = "";
+        SimpleDateFormat sdf = new SimpleDateFormat("dd");
+        Date today = new Date(System.currentTimeMillis());
+        Date otherDay = new Date(clearTime);
+        int temp = Integer.parseInt(sdf.format(today))
+                - Integer.parseInt(sdf.format(otherDay));
+
+        switch (temp) {
+            case 0:
+                result = "今天";
+                break;
+            case 1:
+                result = "昨天";
+                break;
+            case 2:
+                result = "前天";
+                break;
+
+            default:
+                result = longToString(clearTime, FORMAT_DATE);
+                break;
+        }
+        return result;
+    }
+
+    public static boolean sameDay(long day1, long day2) {
+        Calendar instance = Calendar.getInstance();
+        instance.setTimeInMillis(day1);
+        int d1 = instance.get(Calendar.DAY_OF_YEAR);
+        instance.setTimeInMillis(day2);
+        int d2 = instance.get(Calendar.DAY_OF_YEAR);
+        return d1 == d2;
+    }
+
+    public static boolean isToday(Date date) {
+        return sameDay(dateToLong(new Date()), dateToLong(date));
     }
 
     /**

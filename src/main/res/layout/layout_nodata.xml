@@ -21,6 +21,7 @@
         android:layout_height="wrap_content"
         android:text="暂无数据~"
         android:textColor="@color/gray"
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/img"></TextView>
